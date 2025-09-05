@@ -25,45 +25,45 @@
 
         <!-- Formulário Interativo -->
         <form id="pension-form" class="space-y-6">
-             <!-- Salário -->
-             <div>
-                <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Qual o salário base para cálculo?</label>
-                <div class="relative">
-                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-                     <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01">
-                </div>
-            </div>
+              <!-- Salário -->
+              <div>
+                  <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Qual o salário base para cálculo?</label>
+                  <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
+                        <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01">
+                  </div>
+              </div>
 
-            <!-- Número de Filhos -->
-            <div>
-                <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Qual o número de filhos?</label>
-                <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                    <option value="1">1 filho</option>
-                    <option value="2">2 filhos</option>
-                    <option value="3">3 filhos ou mais</option>
-                </select>
-            </div>
+              <!-- Número de Filhos -->
+              <div>
+                  <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Qual o número de filhos?</label>
+                  <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                      <option value="1">1 filho</option>
+                      <option value="2">2 filhos</option>
+                      <option value="3">3 filhos ou mais</option>
+                  </select>
+              </div>
 
-            <!-- Vínculo Empregatício -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Possui vínculo empregatício?</label>
-                <div class="flex gap-4">
-                    <label for="com-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                        <input type="radio" id="com-vinculo" name="vinculo" value="com" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
-                        <span class="ml-3 text-sm font-medium text-gray-800">Sim, com vínculo</span>
-                    </label>
-                    <label for="sem-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                        <input type="radio" id="sem-vinculo" name="vinculo" value="sem" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                        <span class="ml-3 text-sm font-medium text-gray-800">Não, sem vínculo</span>
-                    </label>
-                </div>
-            </div>
+              <!-- Vínculo Empregatício -->
+              <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Possui vínculo empregatício?</label>
+                  <div class="flex gap-4">
+                      <label for="com-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
+                          <input type="radio" id="com-vinculo" name="vinculo" value="com" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                          <span class="ml-3 text-sm font-medium text-gray-800">Sim, com vínculo</span>
+                      </label>
+                      <label for="sem-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
+                          <input type="radio" id="sem-vinculo" name="vinculo" value="sem" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                          <span class="ml-3 text-sm font-medium text-gray-800">Não, sem vínculo</span>
+                      </label>
+                  </div>
+              </div>
 
-            <!-- Necessidades Especiais -->
-            <div class="flex items-center">
-                <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                <label for="necessidades-especiais" class="ml-3 block text-sm font-medium text-gray-800">Algum dos filhos possui necessidades especiais?</label>
-            </div>
+              <!-- Necessidades Especiais -->
+              <div class="flex items-center">
+                  <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                  <label for="necessidades-especiais" class="ml-3 block text-sm font-medium text-gray-800">Algum dos filhos possui necessidades especiais?</label>
+              </div>
         </form>
 
         <!-- Divisão e Área de Resultado -->
@@ -71,9 +71,9 @@
             <div id="resultado" class="text-center p-6 bg-blue-50 rounded-lg border border-blue-200 transition-all duration-300">
                 <p class="text-lg font-medium text-gray-600">O resultado aparecerá aqui.</p>
             </div>
-             <p class="text-xs text-gray-500 mt-4 text-center">
-                <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto.
-            </p>
+              <p class="text-xs text-gray-500 mt-4 text-center">
+                  <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto.
+              </p>
         </div>
     </div>
 
@@ -145,7 +145,6 @@
                 currency: 'BRL'
             });
 
-
             // Exibir o resultado
             resultadoDiv.innerHTML = `
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
@@ -158,11 +157,49 @@
                         <p class="text-3xl font-bold text-blue-600">${valorPensaoFormatado}</p>
                     </div>
                     <div class="col-span-1 sm:col-span-2 border-t mt-2 pt-2">
-                         <p class="text-xs text-gray-500">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
-                         <p class="text-xs text-gray-500 mt-1">Valor de Causa de Referência: ${valorCausaFormatado}</p>
+                          <p class="text-xs text-gray-500">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
+                          <div class="flex items-center justify-between mt-2">
+                              <p class="text-xs text-gray-500">Valor de Causa de Referência: ${valorCausaFormatado}</p>
+                              <button id="copy-button" title="Copiar valor da causa" class="p-1.5 rounded-md text-gray-500 hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 transition-colors">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                  </svg>
+                                  <span class="sr-only">Copiar valor</span>
+                              </button>
+                          </div>
                     </div>
                 </div>
             `;
+            
+            // Adicionar funcionalidade ao botão de copiar
+            const copyButton = document.getElementById('copy-button');
+            if(copyButton) {
+                const originalIcon = copyButton.innerHTML;
+                copyButton.addEventListener('click', () => {
+                    // Usar execCommand para maior compatibilidade em iframes
+                    const textArea = document.createElement("textarea");
+                    textArea.value = valorCausa.toFixed(2).replace('.', ',');
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-green-600" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/>
+                            </svg>
+                        `;
+                        copyButton.title = "Copiado!";
+                        setTimeout(() => {
+                           copyButton.innerHTML = originalIcon;
+                           copyButton.title = "Copiar valor da causa";
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Falha ao copiar', err);
+                    }
+                    document.body.removeChild(textArea);
+                });
+            }
         }
 
         // Adicionar ouvintes de evento para recalcular automaticamente
@@ -174,7 +211,3 @@
 
 </body>
 </html>
-
-
-
-
