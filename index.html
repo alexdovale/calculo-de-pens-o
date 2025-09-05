@@ -160,12 +160,12 @@
                           <p class="text-xs text-gray-500">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
                           <div class="flex items-center justify-between mt-2">
                               <p class="text-xs text-gray-500">Valor de Causa de Referência: ${valorCausaFormatado}</p>
-                              <button id="copy-button" title="Copiar valor da causa" class="p-1.5 rounded-md text-gray-500 hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 transition-colors">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                              <button id="copy-button" title="Copiar valor da causa" class="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 transition-colors">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                       <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
                                       <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
                                   </svg>
-                                  <span class="sr-only">Copiar valor</span>
+                                  <span>Copiar</span>
                               </button>
                           </div>
                     </div>
@@ -175,23 +175,24 @@
             // Adicionar funcionalidade ao botão de copiar
             const copyButton = document.getElementById('copy-button');
             if(copyButton) {
-                const originalIcon = copyButton.innerHTML;
+                const originalContent = copyButton.innerHTML;
                 copyButton.addEventListener('click', () => {
-                    // Usar execCommand para maior compatibilidade em iframes
                     const textArea = document.createElement("textarea");
-                    textArea.value = valorCausa.toFixed(2).replace('.', ',');
+                    // Copiar valor com formatação de localidade (ex: 9.108,00)
+                    textArea.value = valorCausa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     document.body.appendChild(textArea);
                     textArea.select();
                     try {
                         document.execCommand('copy');
                         copyButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-green-600" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="text-green-600" viewBox="0 0 16 16">
                                 <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/>
                             </svg>
+                            <span class="text-green-600">Copiado!</span>
                         `;
                         copyButton.title = "Copiado!";
                         setTimeout(() => {
-                           copyButton.innerHTML = originalIcon;
+                           copyButton.innerHTML = originalContent;
                            copyButton.title = "Copiar valor da causa";
                         }, 2000);
                     } catch (err) {
@@ -211,3 +212,4 @@
 
 </body>
 </html>
+
