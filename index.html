@@ -1,3 +1,4 @@
+Excelente! Aqui está o código HTML e JavaScript completo e integrado, com a funcionalidade de edição e redefinição da porcentagem estimada, conforme solicitado.
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,15 +18,12 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="w-full max-w-lg p-8 space-y-6 bg-white rounded-xl shadow-lg m-4">
-        <!-- Cabeçalho -->
         <div class="text-center">
             <h1 class="text-3xl font-bold text-gray-800">Calculadora de Pensão</h1>
             <p class="mt-2 text-gray-600">Estime a porcentagem e o valor da pensão alimentícia.</p>
         </div>
 
-        <!-- Formulário Interativo -->
         <form id="pension-form" class="space-y-6">
-              <!-- Salário -->
               <div>
                   <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Qual o salário base para cálculo?</label>
                   <div class="relative">
@@ -34,7 +32,6 @@
                   </div>
               </div>
 
-              <!-- Número de Filhos -->
               <div>
                   <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Qual o número de filhos?</label>
                   <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
@@ -44,7 +41,6 @@
                   </select>
               </div>
 
-              <!-- Vínculo Empregatício -->
               <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">Possui vínculo empregatício?</label>
                   <div class="flex gap-4">
@@ -59,14 +55,12 @@
                   </div>
               </div>
 
-              <!-- Necessidades Especiais -->
               <div class="flex items-center">
                   <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
                   <label for="necessidades-especiais" class="ml-3 block text-sm font-medium text-gray-800">Algum dos filhos possui necessidades especiais?</label>
               </div>
         </form>
 
-        <!-- Divisão e Área de Resultado -->
         <div class="border-t border-gray-200 pt-6">
             <div id="resultado" class="text-center p-6 bg-blue-50 rounded-lg border border-blue-200 transition-all duration-300">
                 <p class="text-lg font-medium text-gray-600">O resultado aparecerá aqui.</p>
@@ -109,6 +103,9 @@
             }
         };
 
+        // Variável para armazenar a porcentagem personalizada
+        let porcentagemPersonalizada = null;
+
         function calcularPensao() {
             // Obter valores dos inputs
             const salarioValor = parseFloat(salarioInput.value);
@@ -120,15 +117,18 @@
 
             // Obter dados base
             const dadosBase = dadosPensao[numFilhos];
-            let porcentagem = dadosBase[vinculo];
+            let porcentagemBase = dadosBase[vinculo];
             const valorCausa = dadosBase.valorCausa;
 
             // Adicionar 10% se houver necessidades especiais
             if (temNecessidadesEspeciais) {
-                porcentagem += 10;
+                porcentagemBase += 10;
             }
             
-            // Calcular o valor da pensão
+            // Usar a porcentagem personalizada se ela estiver definida, senão usar a base
+            let porcentagem = porcentagemPersonalizada !== null ? porcentagemPersonalizada : porcentagemBase;
+
+            // Calcular o valor da pensão com base na porcentagem ATUAL
             const valorPensao = (salarioBase * porcentagem) / 100;
 
             // Formatar valores para moeda brasileira
@@ -149,12 +149,34 @@
             resultadoDiv.innerHTML = `
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Porcentagem Estimada</p>
-                        <p class="text-3xl font-bold text-blue-600">${porcentagem}%</p>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-gray-600">Porcentagem Estimada</p>
+                            <button id="edit-porcentagem-button" title="${porcentagemPersonalizada !== null ? 'Redefinir Porcentagem' : 'Editar porcentagem'}" class="p-1 text-gray-500 hover:text-blue-600 rounded transition-colors">
+                                ${porcentagemPersonalizada !== null ? 
+                                    // Ícone de Redefinir (Circular Arrow)
+                                    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    </svg>` : 
+                                    // Ícone de Editar (Pencil)
+                                    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-7.5 7.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3z"/>
+                                        <path fill-rule="evenodd" d="M11.5 2.5a1 1 0 0 1 1 1V5h-2V3.5a1 1 0 0 1 1-1zM5 13.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 1-1-1v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5v2.5z"/>
+                                    </svg>`
+                                }
+                            </button>
+                        </div>
+                        <div id="porcentagem-display" class="text-3xl font-bold text-blue-600 ${porcentagemPersonalizada !== null ? 'text-blue-700 underline decoration-dashed' : ''}">${porcentagem}%</div>
+                        <div id="porcentagem-input-group" class="hidden relative">
+                            <input type="number" id="porcentagem-edit-input" value="${porcentagem}" min="0" max="100" step="1" class="w-full pr-6 py-1 text-xl font-bold border-2 border-blue-500 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <span class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">%</span>
+                            <button id="save-porcentagem-button" title="Salvar Porcentagem" class="mt-2 w-full bg-blue-500 text-white py-1 rounded-md hover:bg-blue-600 transition">Salvar</button>
+                            <button id="cancel-porcentagem-button" title="Cancelar Edição" class="mt-1 w-full bg-gray-300 text-gray-800 py-1 rounded-md hover:bg-gray-400 transition">Cancelar</button>
+                        </div>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-600">Valor Estimado da Pensão</p>
-                        <p class="text-3xl font-bold text-blue-600">${valorPensaoFormatado}</p>
+                        <p id="valor-pensao-display" class="text-3xl font-bold text-blue-600">${valorPensaoFormatado}</p>
                     </div>
                     <div class="col-span-1 sm:col-span-2 border-t mt-2 pt-2">
                           <p class="text-xs text-gray-500">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
@@ -201,10 +223,75 @@
                     document.body.removeChild(textArea);
                 });
             }
+
+            // Adicionar funcionalidade aos botões de edição
+            const editButton = document.getElementById('edit-porcentagem-button');
+            const saveButton = document.getElementById('save-porcentagem-button');
+            const cancelButton = document.getElementById('cancel-porcentagem-button');
+            const porcentagemDisplay = document.getElementById('porcentagem-display');
+            const porcentagemInputGroup = document.getElementById('porcentagem-input-group');
+            const porcentagemInput = document.getElementById('porcentagem-edit-input');
+
+            // Função para alternar entre a exibição e a edição
+            function alternarEdicao(modoEdicao) {
+                if (modoEdicao) {
+                    porcentagemDisplay.classList.add('hidden');
+                    porcentagemInputGroup.classList.remove('hidden');
+                    editButton.classList.add('hidden'); // Esconde o botão de editar no modo de edição
+                    porcentagemInput.focus();
+                } else {
+                    porcentagemDisplay.classList.remove('hidden');
+                    porcentagemInputGroup.classList.add('hidden');
+                    editButton.classList.remove('hidden');
+                }
+            }
+
+            // Ação do botão de Edição/Redefinição
+            editButton.addEventListener('click', () => {
+                if (porcentagemPersonalizada !== null) {
+                    // Se já estiver personalizado, redefinir para o valor base
+                    porcentagemPersonalizada = null;
+                    calcularPensao(); // Recalcula com o valor base
+                } else {
+                    // Entrar no modo de edição
+                    alternarEdicao(true);
+                }
+            });
+
+            // Ação do botão de Salvar
+            saveButton.addEventListener('click', () => {
+                let novoValor = parseInt(porcentagemInput.value);
+                
+                // Validação e Limitação
+                if (isNaN(novoValor) || novoValor < 0) {
+                    novoValor = 0;
+                } else if (novoValor > 100) {
+                    novoValor = 100; // Limite superior
+                }
+                
+                // Salvar o valor personalizado
+                porcentagemPersonalizada = novoValor;
+                
+                // Recalcular e sair do modo de edição
+                calcularPensao(); 
+            });
+
+            // Ação do botão de Cancelar
+            cancelButton.addEventListener('click', () => {
+                // Sair do modo de edição sem alterar o valor. O input volta ao valor 'porcentagem'
+                porcentagemInput.value = porcentagem; 
+                alternarEdicao(false);
+            });
         }
 
         // Adicionar ouvintes de evento para recalcular automaticamente
-        form.addEventListener('input', calcularPensao);
+        form.addEventListener('input', () => {
+            // Recalcula apenas se o modo de edição de porcentagem estiver fechado.
+            // A alteração no modo de edição é feita via botões Salvar/Cancelar/Redefinir
+            if (document.getElementById('porcentagem-input-group')?.classList.contains('hidden')) {
+                calcularPensao();
+            }
+        });
         
         // Calcular ao carregar a página pela primeira vez
         document.addEventListener('DOMContentLoaded', calcularPensao);
