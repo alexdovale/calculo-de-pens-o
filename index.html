@@ -65,7 +65,7 @@
                 <p class="text-lg font-medium text-gray-600">O resultado aparecerá aqui.</p>
             </div>
               <p class="text-xs text-gray-500 mt-4 text-center">
-                  <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto.
+                  <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto. O valor de causa é calculado com base no Art. 292, III do CPC (12 vezes o valor mensal da pensão).
               </p>
         </div>
     </div>
@@ -79,26 +79,23 @@
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
 
-        // Valor do salário mínimo para referência (Valor de 2024. Ajuste se necessário)
+        // Valor do salário mínimo para referência (Valor de 2025: R$ 1.518,00)
         const SALARIO_MINIMO = 1518.00;
         salarioInput.placeholder = `Salário Mínimo Padrão: ${SALARIO_MINIMO.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}`;
 
-        // Dados base para o cálculo
+        // Dados base para o cálculo (Removido o valorCausa fixo)
         const dadosPensao = {
             '1': {
-                com: 30,
-                sem: 50,
-                valorCausa: 9108.00
+                com: 30, // % para 1 filho, com vínculo
+                sem: 50  // % para 1 filho, sem vínculo (base no SM)
             },
             '2': {
-                com: 40,
-                sem: 60,
-                valorCausa: 10929.60
+                com: 40, // % para 2 filhos, com vínculo
+                sem: 60  // % para 2 filhos, sem vínculo (base no SM)
             },
             '3': {
-                com: 60,
-                sem: 100,
-                valorCausa: 18216.00
+                com: 60, // % para 3+ filhos, com vínculo
+                sem: 100 // % para 3+ filhos, sem vínculo (base no SM)
             }
         };
 
@@ -108,6 +105,7 @@
         function calcularPensao() {
             // Obter valores dos inputs
             const salarioValor = parseFloat(salarioInput.value);
+            // Se o campo estiver vazio ou zero, usa o salário mínimo como base (para 'sem vínculo')
             const salarioBase = salarioValor > 0 ? salarioValor : SALARIO_MINIMO;
 
             const numFilhos = numFilhosSelect.value;
@@ -117,11 +115,11 @@
             // Obter dados base
             const dadosBase = dadosPensao[numFilhos];
             let porcentagemBase = dadosBase[vinculo];
-            const valorCausa = dadosBase.valorCausa;
 
             // Adicionar 10% se houver necessidades especiais
             if (temNecessidadesEspeciais) {
-                porcentagemBase += 10;
+                // Garante que a porcentagem base não ultrapasse 100%, especialmente no caso 'sem vínculo'
+                porcentagemBase = Math.min(100, porcentagemBase + 10);
             }
             
             // Usar a porcentagem personalizada se ela estiver definida, senão usar a base
@@ -129,6 +127,9 @@
 
             // Calcular o valor da pensão com base na porcentagem ATUAL
             const valorPensao = (salarioBase * porcentagem) / 100;
+            
+            // NOVO CÁLCULO: Valor da Causa = Valor Mensal da Pensão x 12
+            const valorCausa = valorPensao * 12; 
 
             // Formatar valores para moeda brasileira
             const valorCausaFormatado = valorCausa.toLocaleString('pt-BR', {
@@ -144,20 +145,31 @@
                 currency: 'BRL'
             });
 
-            // Determina o conteúdo do botão de edição/redefinição
-            const editButtonContent = porcentagemPersonalizada !== null ? 
-                // Conteúdo para Redefinir
-                `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                </svg>
-                <span>Redefinir</span>` : 
-                // Conteúdo para Editar
-                `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-7.5 7.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3z"/>
-                    <path fill-rule="evenodd" d="M11.5 2.5a1 1 0 0 1 1 1V5h-2V3.5a1 1 0 0 1 1-1zM5 13.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 1-1-1v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5v2.5z"/>
-                </svg>
-                <span>Editar</span>`;
+            // Conteúdo e título do botão de Edição/Redefinição
+            let editButtonContent;
+            let editButtonTitle;
+            let porcentagemDisplayHint = 'Valor sugerido com base nas regras de estimativa.';
+
+            if (porcentagemPersonalizada !== null) {
+                // Modo Redefinir
+                editButtonContent = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                    </svg>
+                    <span>Redefinir</span>`;
+                editButtonTitle = 'Redefinir para o valor sugerido (base)';
+                porcentagemDisplayHint = 'Valor personalizado. Clique em Redefinir para voltar ao sugerido.';
+            } else {
+                // Modo Ajustar
+                editButtonContent = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-7.5 7.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3z"/>
+                        <path fill-rule="evenodd" d="M11.5 2.5a1 1 0 0 1 1 1V5h-2V3.5a1 1 0 0 1 1-1zM5 13.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 1-1-1v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5v2.5z"/>
+                    </svg>
+                    <span>Ajustar %</span>`; // Texto mais claro
+                editButtonTitle = 'Clique para personalizar a porcentagem (0-100%)';
+            }
 
 
             // Exibir o resultado
@@ -168,15 +180,16 @@
                             <p class="text-sm font-medium text-gray-600">Porcentagem Estimada</p>
                             
                             <button id="edit-porcentagem-button" 
-                                title="${porcentagemPersonalizada !== null ? 'Redefinir para o valor calculado' : 'Editar porcentagem'}" 
-                                class="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md 
-                                       text-gray-600 hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 transition-colors">
+                                title="${editButtonTitle}" 
+                                class="flex items-center gap-1.5 px-3 py-1 text-xs rounded-full bg-blue-100 font-semibold 
+                                       text-blue-700 hover:bg-blue-200 active:bg-blue-300 transition-colors">
                                 ${editButtonContent}
                             </button>
 
                         </div>
                         <div id="porcentagem-display" 
-                            class="text-3xl font-bold text-blue-600 
+                            title="${porcentagemDisplayHint}"
+                            class="text-3xl font-bold text-blue-600 cursor-pointer hover:opacity-90 transition
                                 ${porcentagemPersonalizada !== null ? 'text-blue-700 underline decoration-dashed' : ''}">
                             ${porcentagem}%
                         </div>
@@ -197,7 +210,7 @@
                     <div class="col-span-1 sm:col-span-2 border-t mt-2 pt-2">
                           <p class="text-xs text-gray-500">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
                           <div class="flex items-center justify-between mt-2">
-                              <p class="text-xs text-gray-500">Valor de Causa de Referência: ${valorCausaFormatado}</p>
+                              <p class="text-xs text-gray-500">Valor de Causa de Referência (12 meses): ${valorCausaFormatado}</p>
                               <button id="copy-button" title="Copiar valor da causa" class="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-800 active:bg-gray-300 transition-colors">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                       <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
@@ -216,7 +229,7 @@
                 const originalContent = copyButton.innerHTML;
                 copyButton.addEventListener('click', () => {
                     const textArea = document.createElement("textarea");
-                    // Copiar valor com formatação de localidade (ex: 9.108,00)
+                    // Copiar valor da causa (R$ XXXXX.XX)
                     textArea.value = valorCausa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     document.body.appendChild(textArea);
                     textArea.select();
@@ -248,12 +261,21 @@
             const porcentagemInputGroup = document.getElementById('porcentagem-input-group');
             const porcentagemInput = document.getElementById('porcentagem-edit-input');
 
+            // Adicionar listener ao display para ativar a edição (melhoria de usabilidade)
+            porcentagemDisplay.addEventListener('click', () => {
+                // Ativa a edição se não estiver personalizada ou se o usuário quiser editar de novo
+                if (porcentagemPersonalizada === null || !porcentagemInputGroup.classList.contains('hidden')) {
+                    alternarEdicao(true);
+                }
+            });
+
+
             // Função para alternar entre a exibição e a edição
             function alternarEdicao(modoEdicao) {
                 if (modoEdicao) {
                     porcentagemDisplay.classList.add('hidden');
                     porcentagemInputGroup.classList.remove('hidden');
-                    editButton.classList.add('hidden'); // Esconde o botão de editar no modo de edição
+                    editButton.classList.add('hidden'); // Esconde o botão de ajuste no modo de edição
                     porcentagemInput.focus();
                 } else {
                     porcentagemDisplay.classList.remove('hidden');
@@ -267,7 +289,7 @@
                 if (porcentagemPersonalizada !== null) {
                     // Se já estiver personalizado, redefinir para o valor base
                     porcentagemPersonalizada = null;
-                    calcularPensao(); // Recalcula com o valor base
+                    calcularPensao(); // Recalcula com o valor base e fecha o modo de edição
                 } else {
                     // Entrar no modo de edição
                     alternarEdicao(true);
@@ -287,23 +309,25 @@
                 
                 // Salvar o valor personalizado
                 porcentagemPersonalizada = novoValor;
+                porcentagemInput.value = novoValor; // Reflete o valor validado no campo
                 
-                // Recalcular e sair do modo de edição
+                // Recalcular TUDO (Valor da Pensão e Valor da Causa) e sair do modo de edição
                 calcularPensao(); 
             });
 
             // Ação do botão de Cancelar
             cancelButton.addEventListener('click', () => {
-                // Sair do modo de edição sem alterar o valor. O input volta ao valor 'porcentagem'
-                porcentagemInput.value = porcentagem; 
+                // Sair do modo de edição sem alterar o valor.
                 alternarEdicao(false);
+                // O input deve voltar para o valor atualmente ativo (base ou personalizado)
+                porcentagemInput.value = porcentagem; 
             });
         }
 
         // Adicionar ouvintes de evento para recalcular automaticamente
         form.addEventListener('input', () => {
-            // Recalcula apenas se o modo de edição de porcentagem estiver fechado.
-            // A alteração no modo de edição é feita via botões Salvar/Cancelar/Redefinir
+            // Recalcula se houver mudança nos inputs (salário, filhos, vínculo, necessidades)
+            // mas apenas se o modo de edição de porcentagem estiver fechado.
             if (document.getElementById('porcentagem-input-group')?.classList.contains('hidden')) {
                 calcularPensao();
             }
@@ -315,4 +339,3 @@
 
 </body>
 </html>
-
