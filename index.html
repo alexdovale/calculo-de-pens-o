@@ -79,11 +79,11 @@
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
 
-        // Valor do salário mínimo para referência (R$ 1.518,00 - Valor de 2025)
-        const SALARIO_MINIMO = 1518.00;
+        // Valor do salário mínimo para referência (R$ 1.621,00)
+        const SALARIO_MINIMO = 1621.00;
         salarioInput.placeholder = `Salário Mínimo Padrão: ${SALARIO_MINIMO.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}`;
 
-        // Dados base para o cálculo (Removido o valorCausa fixo)
+        // Dados base para o cálculo
         const dadosPensao = {
             '1': {
                 com: 30, // % para 1 filho, com vínculo
