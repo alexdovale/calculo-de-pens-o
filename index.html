@@ -3,55 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Pensão - DPERJ</title>
+    <title>Calculadora de Pensão Alimentícia | Padrão + DPERJ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-active {
+            background-color: #2563eb;
+            color: white;
+            border-bottom: 2px solid #1e40af;
+        }
+        .tab-inactive {
+            background-color: #f3f4f6;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .tab-inactive:hover {
+            background-color: #e5e7eb;
+        }
+        .transition-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 min-h-screen">
 
-    <div class="w-full max-w-xl p-8 space-y-6 bg-white rounded-xl shadow-lg m-4">
-        <div class="text-center border-b pb-4">
-            <h1 class="text-3xl font-bold text-gray-800">Calculadora de Pensão</h1>
-            <p class="mt-2 text-blue-600 font-semibold">Modelo de Escalonamento (Cláusula de Barreira)</p>
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold">Calculadora de Pensão Alimentícia</h1>
+            <p class="text-blue-100 mt-1">Sistema unificado para cálculo padrão e modelo DPERJ com cláusula de barreira</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Tabs de Navegação -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200">
+            <button id="tab-padrao" class="tab-btn px-6 py-3 rounded-t-lg font-semibold transition-smooth flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Calculadora Padrão
+            </button>
+            <button id="tab-dperj" class="tab-btn px-6 py-3 rounded-t-lg font-semibold transition-smooth flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+                Modelo DPERJ (Barreira)
+            </button>
         </div>
 
-        <form id="pension-form" class="space-y-6">
-              <div>
-                  <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Salário Base do Alimentante (Informado)</label>
-                  <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-                        <input type="number" id="salario" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01" value="2000">
-                  </div>
-                  <p id="representacao-minimo" class="text-xs text-gray-500 mt-1 font-medium italic"></p>
-              </div>
+        <!-- Container para carregar as calculadoras via iframe -->
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <iframe id="calculator-frame" src="" class="w-full min-h-[700px] border-0" style="height: auto;"></iframe>
+        </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                      <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Número de Filhos</label>
-                      <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                          <option value="1">1 filho</option>
-                          <option value="2">2 filhos</option>
-                          <option value="3">3 filhos ou mais</option>
-                      </select>
-                  </div>
-                  <div class="flex items-end pb-3">
-                      <label class="flex items-center cursor-pointer group">
-                          <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                          <span class="ml-3 text-sm font-medium text-gray-700 group-hover:text-blue-600 transition">Necessidades Especiais (+10%)</span>
-                      </label>
-                  </div>
-              </div>
-        </form>
+        <!-- Rodapé informativo -->
+        <div class="mt-6 text-center text-xs text-gray-500">
+            <p>⚠️ Os valores calculados são estimativas e podem variar conforme decisão judicial. Consulte sempre um advogado especializado.</p>
+            <p class="mt-1">Base legal: Art. 292, III do CPC (12x o valor mensal para composição da causa).</p>
+        </div>
+    </main>
 
-        <div id="resultado" class="space-y-4">
+    <script>
+        // =================================================================
+        // DEFINIÇÃO DAS CALCULADORAS (HTML COMPLETO EMBUTIDO)
+        // =================================================================
+
+        // ----- CALCULADORA PADRÃO (Original com vínculo/sem vínculo) -----
+        const CALCULADORA_PADRAO_HTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Estimativa de Pensão Alimentícia</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: transparent; }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="w-full p-6 space-y-6">
+        <div class="text-center border-b pb-4">
+            <h2 class="text-2xl font-bold text-gray-800">Calculadora Padrão</h2>
+            <p class="text-gray-500 text-sm">Estime a pensão com base em vínculo empregatício e necessidades especiais</p>
+        </div>
+
+        <form id="pension-form" class="space-y-5">
+            <div>
+                <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Salário base para cálculo</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
+                    <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" step="0.01" placeholder="Ex: 3000">
+                </div>
             </div>
 
-        <div class="text-center pt-4">
-             <p class="text-[10px] text-gray-400 uppercase tracking-widest">Base de Cálculo: CPC Art. 292, III (12x valor mensal)</p>
+            <div>
+                <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Número de filhos</label>
+                <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="1">1 filho</option>
+                    <option value="2">2 filhos</option>
+                    <option value="3">3 filhos ou mais</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Vínculo empregatício</label>
+                <div class="flex gap-4">
+                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                        <input type="radio" name="vinculo" value="com" class="h-4 w-4 text-blue-600" checked>
+                        <span class="ml-3 text-sm font-medium">Sim, com vínculo</span>
+                    </label>
+                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                        <input type="radio" name="vinculo" value="sem" class="h-4 w-4 text-blue-600">
+                        <span class="ml-3 text-sm font-medium">Não, sem vínculo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex items-center">
+                <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded">
+                <label for="necessidades-especiais" class="ml-3 text-sm font-medium text-gray-800">Algum filho possui necessidades especiais? (+10%)</label>
+            </div>
+        </form>
+
+        <div id="resultado" class="space-y-4"></div>
+    </div>
+
+    <script>
+        const salarioInput = document.getElementById('salario');
+        const numFilhosSelect = document.getElementById('num-filhos');
+        const vinculoRadios = document.getElementsByName('vinculo');
+        const necessidadesCheckbox = document.getElementById('necessidades-especiais');
+        const resultadoDiv = document.getElementById('resultado');
+        const SALARIO_MINIMO = 1621.00;
+
+        const dadosPensao = {
+            '1': { com: 30, sem: 50 },
+            '2': { com: 40, sem: 60 },
+            '3': { com: 60, sem: 100 }
+        };
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function valorPorExtenso(valor) {
+            if (valor === undefined || isNaN(valor)) return '';
+            const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+            const dezenas1 = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+            const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+            const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
+            
+            function extenso(n, singular, plural) {
+                if (n === 0) return '';
+                let s = '';
+                const c = Math.floor(n / 100);
+                const d = Math.floor((n % 100) / 10);
+                const u = n % 10;
+                if (c > 0) s += (c === 1 && d === 0 && u === 0) ? 'cem' : centenas[c];
+                if (d > 0) {
+                    if (s !== '') s += ' e ';
+                    if (d === 1) s += dezenas1[u];
+                    else { s += dezenas[d]; if (u > 0) s += ' e ' + unidades[u]; }
+                } else if (u > 0) { if (s !== '') s += ' e '; s += unidades[u]; }
+                if (n > 1) s += ' ' + plural;
+                else if (n === 1) s += ' ' + singular;
+                return s;
+            }
+            const intPart = Math.floor(valor);
+            const centavos = Math.round((valor - intPart) * 100);
+            if (intPart === 0 && centavos === 0) return 'zero reais';
+            let texto = '';
+            let n = intPart;
+            let idx = 0;
+            do {
+                const parte = n % 1000;
+                if (parte !== 0) {
+                    let s = extenso(parte, idx === 1 ? 'mil' : (idx === 2 ? 'milhão' : 'real'), idx === 1 ? 'mil' : (idx === 2 ? 'milhões' : 'reais'));
+                    if (idx > 1 && parte === 1) s = 'um ' + (idx === 2 ? 'milhão' : 'bilhão');
+                    if (texto !== '') texto = (idx === 1 ? ' ' : (parte < 100 && parte !== 0 ? ' e ' : ' ')) + texto;
+                    texto = s.trim() + texto;
+                }
+                n = Math.floor(n / 1000);
+                idx++;
+            } while (n > 0);
+            if (centavos > 0) {
+                if (intPart > 0) texto += ' e ';
+                texto += extenso(centavos, 'centavo', 'centavos');
+            } else if (intPart > 0 && !texto.endsWith('reais') && !texto.endsWith('real')) {
+                texto += (intPart > 1 ? ' reais' : ' real');
+            }
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }
+
+        function calcular() {
+            const salarioValor = parseFloat(salarioInput.value);
+            const salarioBase = salarioValor > 0 ? salarioValor : SALARIO_MINIMO;
+            const numFilhos = numFilhosSelect.value;
+            const vinculo = document.querySelector('input[name="vinculo"]:checked').value;
+            const temNecessidades = necessidadesCheckbox.checked;
+            let porcentagem = dadosPensao[numFilhos][vinculo];
+            if (temNecessidades) porcentagem = Math.min(100, porcentagem + 10);
+            const valorMensal = (salarioBase * porcentagem) / 100;
+            const valorCausa = valorMensal * 12;
+            const valorExtenso = valorPorExtenso(valorCausa);
+            
+            resultadoDiv.innerHTML = \`
+                <div class="bg-blue-50 rounded-lg p-5 border border-blue-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div><p class="text-sm text-gray-600">Porcentagem aplicada</p><p class="text-3xl font-bold text-blue-600">\${porcentagem}%</p></div>
+                        <div class="text-right"><p class="text-sm text-gray-600">Valor mensal estimado</p><p class="text-2xl font-bold text-gray-800">\${formatarMoeda(valorMensal)}</p></div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 mt-4">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Valor da Causa (12 meses)</p>
+                        <div class="flex justify-between items-center">
+                            <p class="text-white font-bold text-xl">\${formatarMoeda(valorCausa)}</p>
+                            <button onclick="copiarTexto('\${formatarMoeda(valorCausa)} (\${valorExtenso.replace(/'/g, "\\\\'")})')" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-white text-sm flex items-center gap-2">📋 Copiar</button>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-2 italic">\${valorExtenso}</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3">* Baseado no salário de \${formatarMoeda(salarioBase)}</p>
+                </div>
+            \`;
+        }
+        
+        window.copiarTexto = function(texto) {
+            navigator.clipboard.writeText(texto);
+            alert("Valor copiado: " + texto);
+        };
+        
+        [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => el.addEventListener('input', calcular));
+        document.querySelectorAll('input[name="vinculo"]').forEach(radio => radio.addEventListener('change', calcular));
+        calcular();
+    <\/script>
+</body>
+<\/html>`;
+
+        // ----- CALCULADORA DPERJ (Modelo com cláusula de barreira) -----
+        const CALCULADORA_DPERJ_HTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Pensão - DPERJ (Barreira)</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; background: transparent; }<\/style>
+</head>
+<body class="bg-white">
+    <div class="w-full p-6 space-y-6">
+        <div class="text-center border-b pb-4">
+            <h2 class="text-2xl font-bold text-gray-800">Modelo DPERJ</h2>
+            <p class="text-blue-600 text-sm font-medium">Cláusula de Barreira | Escalonamento por vínculo</p>
         </div>
+
+        <form id="form-dperj" class="space-y-5">
+            <div>
+                <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Salário Base do Alimentante</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
+                    <input type="number" id="salario" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" step="0.01" value="2500">
+                </div>
+                <p id="representacao-minimo" class="text-xs text-gray-500 mt-1 font-medium italic"></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Número de Filhos</label>
+                    <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg">
+                        <option value="1">1 filho</option>
+                        <option value="2">2 filhos</option>
+                        <option value="3">3 filhos ou mais</option>
+                    </select>
+                </div>
+                <div class="flex items-end pb-3">
+                    <label class="flex items-center cursor-pointer">
+                        <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-3 text-sm font-medium text-gray-700">Necessidades Especiais (+10%)</span>
+                    </label>
+                </div>
+            </div>
+        </form>
+
+        <div id="resultado" class="space-y-4"></div>
     </div>
 
     <script>
@@ -60,7 +302,6 @@
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
         const representacaoTxt = document.getElementById('representacao-minimo');
-
         const SALARIO_MINIMO = 1621.00;
 
         const regrasDPERJ = {
@@ -78,67 +319,116 @@
             const numFilhos = numFilhosSelect.value;
             const plus = necessidadesCheckbox.checked ? 10 : 0;
 
-            const percCom = regrasDPERJ[numFilhos].com + plus;
-            const percSem = regrasDPERJ[numFilhos].sem + plus;
+            const percCom = Math.min(100, regrasDPERJ[numFilhos].com + plus);
+            const percSem = Math.min(100, regrasDPERJ[numFilhos].sem + plus);
 
             const valorCom = (salarioInfo * percCom) / 100;
             const valorSem = (SALARIO_MINIMO * percSem) / 100;
             
-            // Representação do salário informado em relação ao mínimo
             const porcSobreMinimo = ((salarioInfo / SALARIO_MINIMO) * 100).toFixed(1);
-            representacaoTxt.innerText = `* O salário informado representa ${porcSobreMinimo}% do salário mínimo vigente.`;
+            representacaoTxt.innerText = \`📊 O salário informado representa \${porcSobreMinimo}% do salário mínimo vigente (R$ \${SALARIO_MINIMO.toLocaleString('pt-BR')}).\`;
 
-            resultadoDiv.innerHTML = `
+            resultadoDiv.innerHTML = \`
                 <div class="grid grid-cols-1 gap-4">
-                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm">
-                        <h3 class="text-blue-800 font-bold text-sm uppercase mb-2">Se houver Vínculo Empregatício</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-blue-700">${percCom}%</span>
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                        <h3 class="text-blue-800 font-bold text-sm uppercase">✓ Com Vínculo Empregatício</h3>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-2xl font-bold text-blue-700">\${percCom}%</span>
                             <div class="text-right">
-                                <p class="text-xs text-gray-500">Estimativa Mensal</p>
-                                <p class="text-lg font-bold text-gray-800">${formatarMoeda(valorCom)}</p>
+                                <p class="text-xs text-gray-500">Mensal</p>
+                                <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorCom)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-blue-600 mt-2 italic">Incide sobre rendimentos brutos (menos descontos legais).</p>
+                        <p class="text-[11px] text-blue-600 mt-2">Incide sobre rendimentos brutos</p>
                     </div>
 
-                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg shadow-sm">
-                        <h3 class="text-orange-800 font-bold text-sm uppercase mb-2">Sem Vínculo / Desemprego</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold text-orange-700">${percSem}% <small class="text-xs">do Mínimo</small></span>
+                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg">
+                        <h3 class="text-orange-800 font-bold text-sm uppercase">⚠ Sem Vínculo / Desemprego</h3>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-2xl font-bold text-orange-700">\${percSem}% <span class="text-xs">do SM</span></span>
                             <div class="text-right">
-                                <p class="text-xs text-gray-500">Valor Fixo</p>
-                                <p class="text-lg font-bold text-gray-800">${formatarMoeda(valorSem)}</p>
+                                <p class="text-xs text-gray-500">Valor fixo mínimo</p>
+                                <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorSem)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-orange-600 mt-2 italic">Garante o pagamento mínimo em caso de perda de emprego.</p>
+                        <p class="text-[11px] text-orange-600 mt-2">Garantia em caso de perda de vínculo</p>
                     </div>
 
-                    <div class="p-4 bg-gray-800 text-white rounded-lg shadow-md flex justify-between items-center">
+                    <div class="bg-gray-800 text-white rounded-lg p-4 flex justify-between items-center">
                         <div>
-                            <p class="text-[10px] text-gray-400 uppercase">Valor da Causa (12x com vínculo)</p>
-                            <p class="text-xl font-bold">${formatarMoeda(valorCom * 12)}</p>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wide">Valor da Causa (12 meses)</p>
+                            <p class="text-xl font-bold">\${formatarMoeda(valorCom * 12)}</p>
                         </div>
-                        <button onclick="copiarValor('${formatarMoeda(valorCom * 12)}')" class="bg-blue-600 hover:bg-blue-500 p-2 rounded transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                            </svg>
+                        <button onclick="copiarValorDPERJ('\${formatarMoeda(valorCom * 12)}')" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded text-sm flex items-center gap-2">
+                            📋 Copiar
                         </button>
                     </div>
+                    <p class="text-[11px] text-gray-400 text-center">* Base: Art. 292, III do CPC - 12x o valor mensal</p>
                 </div>
-            `;
+            \`;
         }
 
-        function copiarValor(texto) {
+        window.copiarValorDPERJ = function(texto) {
             navigator.clipboard.writeText(texto);
-            alert("Valor da causa copiado!");
-        }
+            alert("Valor da causa copiado: " + texto);
+        };
 
         [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => {
             el.addEventListener('input', calcular);
         });
+        calcular();
+    <\/script>
+<\/body>
+<\/html>`;
 
-        document.addEventListener('DOMContentLoaded', calcular);
+        // =================================================================
+        // GERENCIAMENTO DAS TABS E IFRAME
+        // =================================================================
+        const iframe = document.getElementById('calculator-frame');
+        const tabPadrao = document.getElementById('tab-padrao');
+        const tabDperj = document.getElementById('tab-dperj');
+        const tabs = [tabPadrao, tabDperj];
+
+        // Função para carregar conteúdo no iframe
+        function carregarCalculadora(tipo) {
+            if (tipo === 'padrao') {
+                iframe.srcdoc = CALCULADORA_PADRAO_HTML;
+                // Atualizar estilo das tabs
+                tabPadrao.classList.add('tab-active');
+                tabPadrao.classList.remove('tab-inactive');
+                tabDperj.classList.add('tab-inactive');
+                tabDperj.classList.remove('tab-active');
+            } else {
+                iframe.srcdoc = CALCULADORA_DPERJ_HTML;
+                tabDperj.classList.add('tab-active');
+                tabDperj.classList.remove('tab-inactive');
+                tabPadrao.classList.add('tab-inactive');
+                tabPadrao.classList.remove('tab-active');
+            }
+        }
+
+        // Adicionar listeners
+        tabPadrao.addEventListener('click', () => carregarCalculadora('padrao'));
+        tabDperj.addEventListener('click', () => carregarCalculadora('dperj'));
+
+        // Ajustar altura do iframe dinamicamente
+        function ajustarAlturaIframe() {
+            if (iframe.contentWindow) {
+                try {
+                    const altura = iframe.contentWindow.document.body.scrollHeight;
+                    if (altura) iframe.style.height = (altura + 40) + 'px';
+                } catch(e) { /* cross-origin não afeta srcdoc */ }
+            }
+        }
+        
+        iframe.addEventListener('load', () => {
+            setTimeout(ajustarAlturaIframe, 100);
+            // Tentar ajustar novamente após conteúdo dinâmico
+            setInterval(ajustarAlturaIframe, 500);
+        });
+
+        // Carregar calculadora padrão por padrão
+        carregarCalculadora('padrao');
     </script>
 </body>
 </html>
