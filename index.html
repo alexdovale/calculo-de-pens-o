@@ -3,452 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Estimativa de Pensão Alimentícia</title>
+    <title>Calculadora de Pensão - DPERJ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="w-full max-w-lg p-8 space-y-6 bg-white rounded-xl shadow-lg m-4">
-        <div class="text-center">
+    <div class="w-full max-w-xl p-8 space-y-6 bg-white rounded-xl shadow-lg m-4">
+        <div class="text-center border-b pb-4">
             <h1 class="text-3xl font-bold text-gray-800">Calculadora de Pensão</h1>
-            <p class="mt-2 text-gray-600">Estime a porcentagem e o valor da pensão alimentícia.</p>
+            <p class="mt-2 text-blue-600 font-semibold">Modelo de Escalonamento (Cláusula de Barreira)</p>
         </div>
 
         <form id="pension-form" class="space-y-6">
               <div>
-                  <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Qual o salário base para cálculo?</label>
+                  <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Salário Base do Alimentante (Informado)</label>
                   <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-                        <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01">
+                        <input type="number" id="salario" class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01" value="2000">
                   </div>
+                  <p id="representacao-minimo" class="text-xs text-gray-500 mt-1 font-medium italic"></p>
               </div>
 
-              <div>
-                  <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Qual o número de filhos?</label>
-                  <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option value="1">1 filho</option>
-                      <option value="2">2 filhos</option>
-                      <option value="3">3 filhos ou mais</option>
-                  </select>
-              </div>
-
-              <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Possui vínculo empregatício?</label>
-                  <div class="flex gap-4">
-                      <label for="com-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                          <input type="radio" id="com-vinculo" name="vinculo" value="com" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
-                          <span class="ml-3 text-sm font-medium text-gray-800">Sim, com vínculo</span>
-                      </label>
-                      <label for="sem-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                          <input type="radio" id="sem-vinculo" name="vinculo" value="sem" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                          <span class="ml-3 text-sm font-medium text-gray-800">Não, sem vínculo</span>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                      <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Número de Filhos</label>
+                      <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                          <option value="1">1 filho</option>
+                          <option value="2">2 filhos</option>
+                          <option value="3">3 filhos ou mais</option>
+                      </select>
+                  </div>
+                  <div class="flex items-end pb-3">
+                      <label class="flex items-center cursor-pointer group">
+                          <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                          <span class="ml-3 text-sm font-medium text-gray-700 group-hover:text-blue-600 transition">Necessidades Especiais (+10%)</span>
                       </label>
                   </div>
-              </div>
-
-              <div class="flex items-center">
-                  <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                  <label for="necessidades-especiais" class="ml-3 block text-sm font-medium text-gray-800">Algum dos filhos possui necessidades especiais?</label>
               </div>
         </form>
 
-        <div class="border-t border-gray-200 pt-6">
-            <div id="resultado" class="text-center p-6 bg-blue-50 rounded-lg border border-blue-200 transition-all duration-300">
-                <p class="text-lg font-medium text-gray-600">O resultado aparecerá aqui.</p>
+        <div id="resultado" class="space-y-4">
             </div>
-              <p class="text-xs text-gray-500 mt-4 text-center">
-                  <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto. O valor de causa é calculado com base no Art. 292, III do CPC (12 vezes o valor mensal da pensão).
-              </p>
+
+        <div class="text-center pt-4">
+             <p class="text-[10px] text-gray-400 uppercase tracking-widest">Base de Cálculo: CPC Art. 292, III (12x valor mensal)</p>
         </div>
     </div>
 
     <script>
-        // Elementos do DOM
-        const form = document.getElementById('pension-form');
         const salarioInput = document.getElementById('salario');
         const numFilhosSelect = document.getElementById('num-filhos');
-        const vinculoRadios = document.getElementsByName('vinculo');
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
+        const representacaoTxt = document.getElementById('representacao-minimo');
 
-        // Valor do salário mínimo para referência (R$ 1.621,00)
         const SALARIO_MINIMO = 1621.00;
-        salarioInput.placeholder = `Salário Mínimo Padrão: ${SALARIO_MINIMO.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}`;
 
-        // Dados base para o cálculo
-        const dadosPensao = {
-            '1': {
-                com: 30, // % para 1 filho, com vínculo
-                sem: 50  // % para 1 filho, sem vínculo (base no SM)
-            },
-            '2': {
-                com: 40, // % para 2 filhos, com vínculo
-                sem: 60  // % para 2 filhos, sem vínculo (base no SM)
-            },
-            '3': {
-                com: 60, // % para 3+ filhos, com vínculo
-                sem: 100 // % para 3+ filhos, sem vínculo (base no SM)
-            }
+        const regrasDPERJ = {
+            '1': { com: 20, sem: 30 },
+            '2': { com: 30, sem: 50 },
+            '3': { com: 40, sem: 70 }
         };
 
-        // Variável para armazenar a porcentagem personalizada
-        let porcentagemPersonalizada = null;
-        
-        // =================================================================
-        // FUNÇÃO DE CONVERSÃO PARA VALOR POR EXTENSO (REAIS E CENTAVOS)
-        // =================================================================
-        function valorMonetarioPorExtenso(valor) {
-            if (typeof valor !== 'number' || isNaN(valor)) return '';
-
-            const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
-            const dezenas1 = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
-            const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
-            const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
-            const milhares = ['', 'mil', 'milhão', 'bilhão'];
-
-            // Função auxiliar para converter um número de até 3 dígitos em palavras
-            function extenso(n, singular, plural) {
-                if (n === 0) return '';
-                let s = '';
-                const c = Math.floor(n / 100);
-                const d = Math.floor((n % 100) / 10);
-                const u = n % 10;
-
-                if (c > 0) {
-                    if (c === 1 && d === 0 && u === 0) s += 'cem';
-                    else s += centenas[c];
-                }
-
-                if (d > 0) {
-                    if (s !== '') s += ' e ';
-                    if (d === 1) {
-                        s += dezenas1[u];
-                    } else {
-                        s += dezenas[d];
-                        if (u > 0) s += ' e ' + unidades[u];
-                    }
-                } else if (u > 0) {
-                    if (s !== '') s += ' e ';
-                    s += unidades[u];
-                }
-
-                if (n > 1) {
-                    s += ' ' + plural;
-                } else if (n === 1) {
-                    s += ' ' + singular;
-                }
-                return s;
-            }
-
-            // Separar Reais e Centavos
-            const intPart = Math.floor(valor);
-            // Centavos são a parte decimal multiplicada por 100, arredondada para garantir 2 dígitos
-            const centavos = Math.round((valor - intPart) * 100);
-
-            let texto = '';
-            let n = intPart;
-            let idx = 0;
-
-            if (n === 0 && centavos === 0) return 'zero reais';
-            if (n === 0) return extenso(centavos, 'centavo', 'centavos');
-            
-            do {
-                const parte = n % 1000;
-                if (parte !== 0) {
-                    let s = extenso(parte, (idx === 1 ? 'mil' : (idx === 2 ? 'milhão' : 'real')), (idx === 1 ? 'mil' : (idx === 2 ? 'milhões' : 'reais')));
-                    
-                    if (idx > 1) {
-                        // Tratar unidades de milhar superior (milhão, bilhão)
-                        s = (parte === 1 ? 'um ' + milhares[idx] : s);
-                    }
-                    
-                    if (texto !== '') {
-                        texto = (idx === 1 ? ' ' : (parte < 100 && parte !== 0 ? ' e ' : ' ')) + texto;
-                    }
-
-                    texto = s.trim() + texto;
-                }
-                n = Math.floor(n / 1000);
-                idx++;
-            } while (n > 0);
-
-            // Adicionar centavos
-            if (centavos > 0) {
-                if (intPart > 0) {
-                    texto += ' e ';
-                }
-                texto += extenso(centavos, 'centavo', 'centavos');
-            } else if (intPart > 0 && !texto.endsWith('reais') && !texto.endsWith('real')) {
-                 // Adicionar "reais" se o valor for inteiro e o loop não adicionou
-                 texto += (intPart > 1 ? ' reais' : ' real');
-            }
-
-            // A primeira letra em maiúsculo
-            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
-        // =================================================================
-        
 
-        function calcularPensao() {
-            // Obter valores dos inputs
-            const salarioValor = parseFloat(salarioInput.value);
-            // Se o campo estiver vazio ou zero, usa o salário mínimo como base (para 'sem vínculo')
-            const salarioBase = salarioValor > 0 ? salarioValor : SALARIO_MINIMO;
-
+        function calcular() {
+            const salarioInfo = parseFloat(salarioInput.value) || 0;
             const numFilhos = numFilhosSelect.value;
-            const vinculo = document.querySelector('input[name="vinculo"]:checked').value;
-            const temNecessidadesEspeciais = necessidadesCheckbox.checked;
+            const plus = necessidadesCheckbox.checked ? 10 : 0;
 
-            // Obter dados base
-            const dadosBase = dadosPensao[numFilhos];
-            let porcentagemBase = dadosBase[vinculo];
+            const percCom = regrasDPERJ[numFilhos].com + plus;
+            const percSem = regrasDPERJ[numFilhos].sem + plus;
 
-            // Adicionar 10% se houver necessidades especiais
-            if (temNecessidadesEspeciais) {
-                // Garante que a porcentagem base não ultrapasse 100%, especialmente no caso 'sem vínculo'
-                porcentagemBase = Math.min(100, porcentagemBase + 10);
-            }
+            const valorCom = (salarioInfo * percCom) / 100;
+            const valorSem = (SALARIO_MINIMO * percSem) / 100;
             
-            // Usar a porcentagem personalizada se ela estiver definida, senão usar a base
-            let porcentagem = porcentagemPersonalizada !== null ? porcentagemPersonalizada : porcentagemBase;
+            // Representação do salário informado em relação ao mínimo
+            const porcSobreMinimo = ((salarioInfo / SALARIO_MINIMO) * 100).toFixed(1);
+            representacaoTxt.innerText = `* O salário informado representa ${porcSobreMinimo}% do salário mínimo vigente.`;
 
-            // Calcular o valor da pensão com base na porcentagem ATUAL
-            const valorPensao = (salarioBase * porcentagem) / 100;
-            
-            // NOVO CÁLCULO: Valor da Causa = Valor Mensal da Pensão x 12
-            const valorCausa = valorPensao * 12; 
-
-            // Formatar valores para moeda brasileira
-            const valorCausaFormatado = valorCausa.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-            const valorPensaoFormatado = valorPensao.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-            const salarioBaseFormatado = salarioBase.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-
-            // Valor da Causa por extenso
-            const valorCausaPorExtenso = valorMonetarioPorExtenso(valorCausa);
-
-            // Conteúdo e título do botão de Edição/Redefinição
-            let editButtonContent;
-            let editButtonTitle;
-            let porcentagemDisplayHint = 'Valor sugerido com base nas regras de estimativa.';
-
-            if (porcentagemPersonalizada !== null) {
-                // Modo Redefinir
-                editButtonContent = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                    </svg>
-                    <span>Redefinir</span>`;
-                editButtonTitle = 'Redefinir para o valor sugerido (base)';
-                porcentagemDisplayHint = 'Valor personalizado. Clique em Redefinir para voltar ao sugerido.';
-            } else {
-                // Modo Ajustar
-                editButtonContent = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-7.5 7.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3z"/>
-                        <path fill-rule="evenodd" d="M11.5 2.5a1 1 0 0 1 1 1V5h-2V3.5a1 1 0 0 1 1-1zM5 13.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 1-1-1v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5v2.5z"/>
-                    </svg>
-                    <span>Ajustar %</span>`; // Texto mais claro
-                editButtonTitle = 'Clique para personalizar a porcentagem (0-100%)';
-            }
-
-
-            // Exibir o resultado
             resultadoDiv.innerHTML = `
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-600">Porcentagem Estimada</p>
-                            
-                            <button id="edit-porcentagem-button" 
-                                title="${editButtonTitle}" 
-                                class="flex items-center gap-1.5 px-3 py-1 text-xs rounded-full bg-blue-100 font-semibold 
-                                       text-blue-700 hover:bg-blue-200 active:bg-blue-300 transition-colors">
-                                ${editButtonContent}
-                            </button>
-
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm">
+                        <h3 class="text-blue-800 font-bold text-sm uppercase mb-2">Se houver Vínculo Empregatício</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-700">${percCom}%</span>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Estimativa Mensal</p>
+                                <p class="text-lg font-bold text-gray-800">${formatarMoeda(valorCom)}</p>
+                            </div>
                         </div>
-                        <div id="porcentagem-display" 
-                            title="${porcentagemDisplayHint}"
-                            class="text-3xl font-bold text-blue-600 cursor-pointer hover:opacity-90 transition
-                                ${porcentagemPersonalizada !== null ? 'text-blue-700 underline decoration-dashed' : ''}">
-                            ${porcentagem}%
-                        </div>
-                        
-                        <div id="porcentagem-input-group" class="hidden relative pt-2">
-                            <input type="number" id="porcentagem-edit-input" value="${porcentagem}" min="0" max="100" step="1" 
-                                class="w-full pr-6 py-1 text-xl font-bold border-2 border-blue-500 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                            <span class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold mt-1">%</span>
-                            <button id="save-porcentagem-button" title="Salvar Porcentagem" class="mt-2 w-full bg-blue-500 text-white py-1 rounded-md hover:bg-blue-600 transition">Salvar</button>
-                            <button id="cancel-porcentagem-button" title="Cancelar Edição" class="mt-1 w-full bg-gray-300 text-gray-800 py-1 rounded-md hover:bg-gray-400 transition">Cancelar</button>
-                        </div>
-                        
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Valor Estimado da Pensão</p>
-                        <p id="valor-pensao-display" class="text-3xl font-bold text-blue-600">${valorPensaoFormatado}</p>
+                        <p class="text-[11px] text-blue-600 mt-2 italic">Incide sobre rendimentos brutos (menos descontos legais).</p>
                     </div>
 
-                    <div class="col-span-1 sm:col-span-2 border-t mt-4 pt-4 space-y-3">
-                          
-                          <p class="text-base text-gray-600 font-medium">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
-                          
-                          <div class="p-3 bg-gray-100 rounded-lg border border-gray-300">
-                              <p class="text-sm font-medium text-gray-700">Valor de Causa de Referência (12 meses):</p>
-                              <p id="valor-causa-display" class="text-xl font-bold text-gray-800 mt-1">${valorCausaFormatado}</p>
-                          </div>
+                    <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg shadow-sm">
+                        <h3 class="text-orange-800 font-bold text-sm uppercase mb-2">Sem Vínculo / Desemprego</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-orange-700">${percSem}% <small class="text-xs">do Mínimo</small></span>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Valor Fixo</p>
+                                <p class="text-lg font-bold text-gray-800">${formatarMoeda(valorSem)}</p>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-orange-600 mt-2 italic">Garante o pagamento mínimo em caso de perda de emprego.</p>
+                    </div>
 
-                          <button id="copy-button" title="Copiar valor da causa" 
-                                  class="w-full flex items-center justify-center gap-2 px-4 py-3 text-lg rounded-lg font-semibold 
-                                         bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-md">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                              </svg>
-                              <span>Copiar Valor da Causa</span>
-                          </button>
+                    <div class="p-4 bg-gray-800 text-white rounded-lg shadow-md flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase">Valor da Causa (12x com vínculo)</p>
+                            <p class="text-xl font-bold">${formatarMoeda(valorCom * 12)}</p>
+                        </div>
+                        <button onclick="copiarValor('${formatarMoeda(valorCom * 12)}')" class="bg-blue-600 hover:bg-blue-500 p-2 rounded transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             `;
-            
-            // Adicionar funcionalidade ao botão de copiar
-            const copyButton = document.getElementById('copy-button');
-            if(copyButton) {
-                const originalContent = copyButton.innerHTML;
-                copyButton.addEventListener('click', () => {
-                    const textArea = document.createElement("textarea");
-                    
-                    // --- NOVA ESTRUTURA DE CÓPIA ---
-                    const textoParaCopiar = `${valorCausaFormatado} (${valorCausaPorExtenso})`;
-                    textArea.value = textoParaCopiar;
-                    // --- FIM NOVA ESTRUTURA DE CÓPIA ---
-
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        copyButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-white" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/>
-                            </svg>
-                            <span>Valor Copiado!</span>
-                        `;
-                        copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800');
-                        copyButton.classList.add('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
-                        copyButton.title = "Copiado!";
-                        setTimeout(() => {
-                           copyButton.innerHTML = originalContent;
-                           copyButton.classList.remove('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
-                           copyButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800');
-                           copyButton.title = "Copiar valor da causa";
-                        }, 2000);
-                    } catch (err) {
-                        console.error('Falha ao copiar', err);
-                    }
-                    document.body.removeChild(textArea);
-                });
-            }
-
-            // Adicionar funcionalidade aos botões de edição
-            const editButton = document.getElementById('edit-porcentagem-button');
-            const saveButton = document.getElementById('save-porcentagem-button');
-            const cancelButton = document.getElementById('cancel-porcentagem-button');
-            const porcentagemDisplay = document.getElementById('porcentagem-display');
-            const porcentagemInputGroup = document.getElementById('porcentagem-input-group');
-            const porcentagemInput = document.getElementById('porcentagem-edit-input');
-
-            // Adicionar listener ao display para ativar a edição (melhoria de usabilidade)
-            porcentagemDisplay.addEventListener('click', () => {
-                // Ativa a edição se não estiver personalizada ou se o usuário quiser editar de novo
-                if (porcentagemPersonalizada === null || !porcentagemInputGroup.classList.contains('hidden')) {
-                    alternarEdicao(true);
-                }
-            });
-
-
-            // Função para alternar entre a exibição e a edição
-            function alternarEdicao(modoEdicao) {
-                if (modoEdicao) {
-                    porcentagemDisplay.classList.add('hidden');
-                    porcentagemInputGroup.classList.remove('hidden');
-                    editButton.classList.add('hidden'); // Esconde o botão de ajuste no modo de edição
-                    porcentagemInput.focus();
-                } else {
-                    porcentagemDisplay.classList.remove('hidden');
-                    porcentagemInputGroup.classList.add('hidden');
-                    editButton.classList.remove('hidden');
-                }
-            }
-
-            // Ação do botão de Edição/Redefinição
-            editButton.addEventListener('click', () => {
-                if (porcentagemPersonalizada !== null) {
-                    // Se já estiver personalizado, redefinir para o valor base
-                    porcentagemPersonalizada = null;
-                    calcularPensao(); // Recalcula com o valor base e fecha o modo de edição
-                } else {
-                    // Entrar no modo de edição
-                    alternarEdicao(true);
-                }
-            });
-
-            // Ação do botão de Salvar
-            saveButton.addEventListener('click', () => {
-                let novoValor = parseInt(porcentagemInput.value);
-                
-                // Validação e Limitação
-                if (isNaN(novoValor) || novoValor < 0) {
-                    novoValor = 0;
-                } else if (novoValor > 100) {
-                    novoValor = 100; // Limite superior
-                }
-                
-                // Salvar o valor personalizado
-                porcentagemPersonalizada = novoValor;
-                porcentagemInput.value = novoValor; // Reflete o valor validado no campo
-                
-                // Recalcular TUDO (Valor da Pensão e Valor da Causa) e sair do modo de edição
-                calcularPensao(); 
-            });
-
-            // Ação do botão de Cancelar
-            cancelButton.addEventListener('click', () => {
-                // Sair do modo de edição sem alterar o valor.
-                alternarEdicao(false);
-                // O input deve voltar para o valor atualmente ativo (base ou personalizado)
-                porcentagemInput.value = porcentagem; 
-            });
         }
 
-        // Adicionar ouvintes de evento para recalcular automaticamente
-        form.addEventListener('input', () => {
-            // Recalcula se houver mudança nos inputs (salário, filhos, vínculo, necessidades)
-            // mas apenas se o modo de edição de porcentagem estiver fechado.
-            if (document.getElementById('porcentagem-input-group')?.classList.contains('hidden')) {
-                calcularPensao();
-            }
-        });
-        
-        // Calcular ao carregar a página pela primeira vez
-        document.addEventListener('DOMContentLoaded', calcularPensao);
-    </script>
+        function copiarValor(texto) {
+            navigator.clipboard.writeText(texto);
+            alert("Valor da causa copiado!");
+        }
 
+        [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => {
+            el.addEventListener('input', calcular);
+        });
+
+        document.addEventListener('DOMContentLoaded', calcular);
+    </script>
 </body>
 </html>
