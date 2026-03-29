@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Pensão Alimentícia | Padrão + DPERJ</title>
+    <title>Calculadora de Pensão Alimentícia | Padrão + DPERJ (Mesmas %)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
     <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <h1 class="text-3xl font-bold">Calculadora de Pensão Alimentícia</h1>
-            <p class="text-blue-100 mt-1">Sistema unificado para cálculo padrão e modelo DPERJ com cláusula de barreira</p>
+            <p class="text-blue-100 mt-1">Sistema unificado com o mesmo padrão de porcentagens para ambas as calculadoras</p>
         </div>
     </header>
 
@@ -59,31 +59,36 @@
 
         <!-- Container para carregar as calculadoras via iframe -->
         <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-            <iframe id="calculator-frame" src="" class="w-full min-h-[700px] border-0" style="height: auto;"></iframe>
+            <iframe id="calculator-frame" src="" class="w-full border-0" style="min-height: 700px; height: auto;"></iframe>
         </div>
 
         <!-- Rodapé informativo -->
         <div class="mt-6 text-center text-xs text-gray-500">
             <p>⚠️ Os valores calculados são estimativas e podem variar conforme decisão judicial. Consulte sempre um advogado especializado.</p>
             <p class="mt-1">Base legal: Art. 292, III do CPC (12x o valor mensal para composição da causa).</p>
+            <p class="mt-1 text-blue-600">📌 Ambas as calculadoras utilizam o MESMO padrão de porcentagens.</p>
         </div>
     </main>
 
     <script>
         // =================================================================
-        // DEFINIÇÃO DAS CALCULADORAS (HTML COMPLETO EMBUTIDO)
+        // DEFINIÇÃO DAS CALCULADORAS (AMBAS COM O MESMO PADRÃO DE %)
         // =================================================================
+        
+        // PADRÃO DE PORCENTAGENS (igual para as duas)
+        // 1 filho: 30% (com vínculo) / 50% (sem vínculo)
+        // 2 filhos: 40% (com vínculo) / 60% (sem vínculo)
+        // 3+ filhos: 60% (com vínculo) / 100% (sem vínculo)
+        // +10% para necessidades especiais (limitado a 100%)
 
-        // ----- CALCULADORA PADRÃO (Original com vínculo/sem vínculo) -----
+        // ----- CALCULADORA PADRÃO (Original com ajuste de porcentagem personalizável) -----
         const CALCULADORA_PADRAO_HTML = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Estimativa de Pensão Alimentícia</title>
+    <title>Calculadora Padrão</title>
     <script src="https://cdn.tailwindcss.com"><\/script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: transparent; }
@@ -103,6 +108,7 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
                     <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" step="0.01" placeholder="Ex: 3000">
                 </div>
+                <p class="text-xs text-gray-400 mt-1">Salário mínimo de referência: R$ 1.621,00</p>
             </div>
 
             <div>
@@ -145,6 +151,7 @@
         const resultadoDiv = document.getElementById('resultado');
         const SALARIO_MINIMO = 1621.00;
 
+        // PADRÃO DE PORCENTAGENS (MESMO DA CLAUSULA DE BARREIRA)
         const dadosPensao = {
             '1': { com: 30, sem: 50 },
             '2': { com: 40, sem: 60 },
@@ -247,13 +254,13 @@
 </body>
 <\/html>`;
 
-        // ----- CALCULADORA DPERJ (Modelo com cláusula de barreira) -----
+        // ----- CALCULADORA DPERJ (MESMO PADRÃO DE PORCENTAGENS) -----
         const CALCULADORA_DPERJ_HTML = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Pensão - DPERJ (Barreira)</title>
+    <title>Calculadora DPERJ - Mesmo Padrão de %</title>
     <script src="https://cdn.tailwindcss.com"><\/script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Inter', sans-serif; background: transparent; }<\/style>
@@ -261,8 +268,8 @@
 <body class="bg-white">
     <div class="w-full p-6 space-y-6">
         <div class="text-center border-b pb-4">
-            <h2 class="text-2xl font-bold text-gray-800">Modelo DPERJ</h2>
-            <p class="text-blue-600 text-sm font-medium">Cláusula de Barreira | Escalonamento por vínculo</p>
+            <h2 class="text-2xl font-bold text-gray-800">Modelo DPERJ - Cláusula de Barreira</h2>
+            <p class="text-blue-600 text-sm font-medium">📌 Mesmo padrão de porcentagens da Calculadora Padrão</p>
         </div>
 
         <form id="form-dperj" class="space-y-5">
@@ -304,10 +311,11 @@
         const representacaoTxt = document.getElementById('representacao-minimo');
         const SALARIO_MINIMO = 1621.00;
 
+        // MESMO PADRÃO DE PORCENTAGENS da Calculadora Padrão
         const regrasDPERJ = {
-            '1': { com: 20, sem: 30 },
-            '2': { com: 30, sem: 50 },
-            '3': { com: 40, sem: 70 }
+            '1': { com: 30, sem: 50 },
+            '2': { com: 40, sem: 60 },
+            '3': { com: 60, sem: 100 }
         };
 
         function formatarMoeda(valor) {
@@ -319,13 +327,17 @@
             const numFilhos = numFilhosSelect.value;
             const plus = necessidadesCheckbox.checked ? 10 : 0;
 
-            const percCom = Math.min(100, regrasDPERJ[numFilhos].com + plus);
-            const percSem = Math.min(100, regrasDPERJ[numFilhos].sem + plus);
+            let percCom = regrasDPERJ[numFilhos].com + plus;
+            let percSem = regrasDPERJ[numFilhos].sem + plus;
+            
+            // Limitar a 100%
+            percCom = Math.min(100, percCom);
+            percSem = Math.min(100, percSem);
 
             const valorCom = (salarioInfo * percCom) / 100;
             const valorSem = (SALARIO_MINIMO * percSem) / 100;
             
-            const porcSobreMinimo = ((salarioInfo / SALARIO_MINIMO) * 100).toFixed(1);
+            const porcSobreMinimo = salarioInfo > 0 ? ((salarioInfo / SALARIO_MINIMO) * 100).toFixed(1) : 0;
             representacaoTxt.innerText = \`📊 O salário informado representa \${porcSobreMinimo}% do salário mínimo vigente (R$ \${SALARIO_MINIMO.toLocaleString('pt-BR')}).\`;
 
             resultadoDiv.innerHTML = \`
@@ -339,7 +351,7 @@
                                 <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorCom)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-blue-600 mt-2">Incide sobre rendimentos brutos</p>
+                        <p class="text-[11px] text-blue-600 mt-2">Incide sobre rendimentos brutos (menos descontos legais)</p>
                     </div>
 
                     <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg">
@@ -351,7 +363,7 @@
                                 <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorSem)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-orange-600 mt-2">Garantia em caso de perda de vínculo</p>
+                        <p class="text-[11px] text-orange-600 mt-2">Garantia em caso de perda de vínculo (Cláusula de Barreira)</p>
                     </div>
 
                     <div class="bg-gray-800 text-white rounded-lg p-4 flex justify-between items-center">
@@ -363,7 +375,7 @@
                             📋 Copiar
                         </button>
                     </div>
-                    <p class="text-[11px] text-gray-400 text-center">* Base: Art. 292, III do CPC - 12x o valor mensal</p>
+                    <p class="text-[11px] text-gray-400 text-center">* Base: Art. 292, III do CPC - 12x o valor mensal com vínculo</p>
                 </div>
             \`;
         }
@@ -387,13 +399,11 @@
         const iframe = document.getElementById('calculator-frame');
         const tabPadrao = document.getElementById('tab-padrao');
         const tabDperj = document.getElementById('tab-dperj');
-        const tabs = [tabPadrao, tabDperj];
 
         // Função para carregar conteúdo no iframe
         function carregarCalculadora(tipo) {
             if (tipo === 'padrao') {
                 iframe.srcdoc = CALCULADORA_PADRAO_HTML;
-                // Atualizar estilo das tabs
                 tabPadrao.classList.add('tab-active');
                 tabPadrao.classList.remove('tab-inactive');
                 tabDperj.classList.add('tab-inactive');
@@ -416,14 +426,13 @@
             if (iframe.contentWindow) {
                 try {
                     const altura = iframe.contentWindow.document.body.scrollHeight;
-                    if (altura) iframe.style.height = (altura + 40) + 'px';
+                    if (altura && altura > 100) iframe.style.height = (altura + 40) + 'px';
                 } catch(e) { /* cross-origin não afeta srcdoc */ }
             }
         }
         
         iframe.addEventListener('load', () => {
             setTimeout(ajustarAlturaIframe, 100);
-            // Tentar ajustar novamente após conteúdo dinâmico
             setInterval(ajustarAlturaIframe, 500);
         });
 
