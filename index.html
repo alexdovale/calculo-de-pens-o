@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Pensão Alimentícia | Padrão + DPERJ (Mesmas %)</title>
+    <title>Calculadora de Pensão | Padrão + DPERJ com Edição de %</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
         .tab-active {
             background-color: #2563eb;
             color: white;
@@ -32,16 +30,14 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- Header -->
     <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <h1 class="text-3xl font-bold">Calculadora de Pensão Alimentícia</h1>
-            <p class="text-blue-100 mt-1">Sistema unificado com o mesmo padrão de porcentagens para ambas as calculadoras</p>
+            <p class="text-blue-100 mt-1">Sistema unificado com edição de porcentagem e regra de 3 sobre o salário mínimo</p>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <!-- Tabs de Navegação -->
         <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200">
             <button id="tab-padrao" class="tab-btn px-6 py-3 rounded-t-lg font-semibold transition-smooth flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,31 +53,23 @@
             </button>
         </div>
 
-        <!-- Container para carregar as calculadoras via iframe -->
         <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-            <iframe id="calculator-frame" src="" class="w-full border-0" style="min-height: 700px; height: auto;"></iframe>
+            <iframe id="calculator-frame" src="" class="w-full border-0" style="min-height: 750px; height: auto;"></iframe>
         </div>
 
-        <!-- Rodapé informativo -->
         <div class="mt-6 text-center text-xs text-gray-500">
             <p>⚠️ Os valores calculados são estimativas e podem variar conforme decisão judicial. Consulte sempre um advogado especializado.</p>
-            <p class="mt-1">Base legal: Art. 292, III do CPC (12x o valor mensal para composição da causa).</p>
-            <p class="mt-1 text-blue-600">📌 Ambas as calculadoras utilizam o MESMO padrão de porcentagens.</p>
+            <p class="mt-1">📐 Regra de 3: A porcentagem é calculada proporcionalmente ao salário mínimo quando o salário informado é menor que o piso.</p>
+            <p class="mt-1">✏️ Clique na porcentagem para editar manualmente (0 a 100%).</p>
         </div>
     </main>
 
     <script>
-        // =================================================================
-        // DEFINIÇÃO DAS CALCULADORAS (AMBAS COM O MESMO PADRÃO DE %)
-        // =================================================================
-        
-        // PADRÃO DE PORCENTAGENS (igual para as duas)
-        // 1 filho: 30% (com vínculo) / 50% (sem vínculo)
-        // 2 filhos: 40% (com vínculo) / 60% (sem vínculo)
-        // 3+ filhos: 60% (com vínculo) / 100% (sem vínculo)
-        // +10% para necessidades especiais (limitado a 100%)
+        const SALARIO_MINIMO = 1621.00;
 
-        // ----- CALCULADORA PADRÃO (Original com ajuste de porcentagem personalizável) -----
+        // =================================================================
+        // CALCULADORA PADRÃO (com edição de % e regra de 3)
+        // =================================================================
         const CALCULADORA_PADRAO_HTML = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -90,15 +78,13 @@
     <title>Calculadora Padrão</title>
     <script src="https://cdn.tailwindcss.com"><\/script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background: transparent; }
-    </style>
+    <style>body { font-family: 'Inter', sans-serif; background: transparent; }<\/style>
 </head>
 <body class="bg-white">
     <div class="w-full p-6 space-y-6">
         <div class="text-center border-b pb-4">
             <h2 class="text-2xl font-bold text-gray-800">Calculadora Padrão</h2>
-            <p class="text-gray-500 text-sm">Estime a pensão com base em vínculo empregatício e necessidades especiais</p>
+            <p class="text-gray-500 text-sm">Com edição manual de porcentagem e regra de 3 sobre o mínimo</p>
         </div>
 
         <form id="pension-form" class="space-y-5">
@@ -106,14 +92,14 @@
                 <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Salário base para cálculo</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-                    <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" step="0.01" placeholder="Ex: 3000">
+                    <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" step="0.01" placeholder="Ex: 3000">
                 </div>
-                <p class="text-xs text-gray-400 mt-1">Salário mínimo de referência: R$ 1.621,00</p>
+                <p id="representacao-minimo" class="text-xs text-gray-500 mt-1 font-medium italic"></p>
             </div>
 
             <div>
                 <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Número de filhos</label>
-                <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg">
                     <option value="1">1 filho</option>
                     <option value="2">2 filhos</option>
                     <option value="3">3 filhos ou mais</option>
@@ -123,11 +109,11 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Vínculo empregatício</label>
                 <div class="flex gap-4">
-                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50">
                         <input type="radio" name="vinculo" value="com" class="h-4 w-4 text-blue-600" checked>
                         <span class="ml-3 text-sm font-medium">Sim, com vínculo</span>
                     </label>
-                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500">
+                    <label class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50">
                         <input type="radio" name="vinculo" value="sem" class="h-4 w-4 text-blue-600">
                         <span class="ml-3 text-sm font-medium">Não, sem vínculo</span>
                     </label>
@@ -136,7 +122,7 @@
 
             <div class="flex items-center">
                 <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded">
-                <label for="necessidades-especiais" class="ml-3 text-sm font-medium text-gray-800">Algum filho possui necessidades especiais? (+10%)</label>
+                <label for="necessidades-especiais" class="ml-3 text-sm font-medium text-gray-800">Necessidades Especiais (+10%)</label>
             </div>
         </form>
 
@@ -146,100 +132,140 @@
     <script>
         const salarioInput = document.getElementById('salario');
         const numFilhosSelect = document.getElementById('num-filhos');
-        const vinculoRadios = document.getElementsByName('vinculo');
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
-        const SALARIO_MINIMO = 1621.00;
+        const representacaoTxt = document.getElementById('representacao-minimo');
+        const SALARIO_MINIMO = ${SALARIO_MINIMO};
 
-        // PADRÃO DE PORCENTAGENS (MESMO DA CLAUSULA DE BARREIRA)
         const dadosPensao = {
             '1': { com: 30, sem: 50 },
             '2': { com: 40, sem: 60 },
             '3': { com: 60, sem: 100 }
         };
 
+        let porcentagemPersonalizada = null;
+
         function formatarMoeda(valor) {
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function valorPorExtenso(valor) {
-            if (valor === undefined || isNaN(valor)) return '';
-            const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
-            const dezenas1 = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
-            const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
-            const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
-            
-            function extenso(n, singular, plural) {
-                if (n === 0) return '';
-                let s = '';
-                const c = Math.floor(n / 100);
-                const d = Math.floor((n % 100) / 10);
-                const u = n % 10;
-                if (c > 0) s += (c === 1 && d === 0 && u === 0) ? 'cem' : centenas[c];
-                if (d > 0) {
-                    if (s !== '') s += ' e ';
-                    if (d === 1) s += dezenas1[u];
-                    else { s += dezenas[d]; if (u > 0) s += ' e ' + unidades[u]; }
-                } else if (u > 0) { if (s !== '') s += ' e '; s += unidades[u]; }
-                if (n > 1) s += ' ' + plural;
-                else if (n === 1) s += ' ' + singular;
-                return s;
+        // Regra de 3: recalcula porcentagem baseada no salário informado vs mínimo
+        function aplicarRegraDeTres(porcentagemBase, salarioInformado) {
+            if (salarioInformado <= 0 || salarioInformado >= SALARIO_MINIMO) {
+                return porcentagemBase;
             }
-            const intPart = Math.floor(valor);
-            const centavos = Math.round((valor - intPart) * 100);
-            if (intPart === 0 && centavos === 0) return 'zero reais';
-            let texto = '';
-            let n = intPart;
-            let idx = 0;
-            do {
-                const parte = n % 1000;
-                if (parte !== 0) {
-                    let s = extenso(parte, idx === 1 ? 'mil' : (idx === 2 ? 'milhão' : 'real'), idx === 1 ? 'mil' : (idx === 2 ? 'milhões' : 'reais'));
-                    if (idx > 1 && parte === 1) s = 'um ' + (idx === 2 ? 'milhão' : 'bilhão');
-                    if (texto !== '') texto = (idx === 1 ? ' ' : (parte < 100 && parte !== 0 ? ' e ' : ' ')) + texto;
-                    texto = s.trim() + texto;
-                }
-                n = Math.floor(n / 1000);
-                idx++;
-            } while (n > 0);
-            if (centavos > 0) {
-                if (intPart > 0) texto += ' e ';
-                texto += extenso(centavos, 'centavo', 'centavos');
-            } else if (intPart > 0 && !texto.endsWith('reais') && !texto.endsWith('real')) {
-                texto += (intPart > 1 ? ' reais' : ' real');
-            }
-            return texto.charAt(0).toUpperCase() + texto.slice(1);
+            // Se salário é menor que o mínimo, aplica regra de 3 proporcional
+            // Ex: salário R$ 810,50 (50% do mínimo) -> porcentagem base * 0.5
+            const proporcao = salarioInformado / SALARIO_MINIMO;
+            let novaPorcentagem = porcentagemBase * proporcao;
+            // Garantir mínimo de 5% para não tornar o valor irrisório
+            return Math.max(5, Math.min(100, novaPorcentagem));
+        }
+
+        function obterPorcentagemBase() {
+            const numFilhos = numFilhosSelect.value;
+            const vinculo = document.querySelector('input[name="vinculo"]:checked').value;
+            let base = dadosPensao[numFilhos][vinculo];
+            if (necessidadesCheckbox.checked) base = Math.min(100, base + 10);
+            return base;
         }
 
         function calcular() {
-            const salarioValor = parseFloat(salarioInput.value);
-            const salarioBase = salarioValor > 0 ? salarioValor : SALARIO_MINIMO;
+            const salarioInformado = parseFloat(salarioInput.value) || 0;
+            const salarioBase = salarioInformado > 0 ? salarioInformado : SALARIO_MINIMO;
             const numFilhos = numFilhosSelect.value;
             const vinculo = document.querySelector('input[name="vinculo"]:checked').value;
             const temNecessidades = necessidadesCheckbox.checked;
-            let porcentagem = dadosPensao[numFilhos][vinculo];
-            if (temNecessidades) porcentagem = Math.min(100, porcentagem + 10);
-            const valorMensal = (salarioBase * porcentagem) / 100;
+            
+            // Representação do salário em relação ao mínimo
+            const proporcaoMinimo = salarioInformado > 0 ? (salarioInformado / SALARIO_MINIMO) * 100 : 0;
+            representacaoTxt.innerText = \`📊 Salário informado representa \${proporcaoMinimo.toFixed(1)}% do salário mínimo (R$ \${SALARIO_MINIMO.toLocaleString('pt-BR')})\`;
+            
+            let porcentagemFinal;
+            if (porcentagemPersonalizada !== null) {
+                porcentagemFinal = porcentagemPersonalizada;
+            } else {
+                let base = dadosPensao[numFilhos][vinculo];
+                if (temNecessidades) base = Math.min(100, base + 10);
+                // Aplica regra de 3 se salário for menor que o mínimo
+                porcentagemFinal = aplicarRegraDeTres(base, salarioInformado);
+            }
+            
+            const valorMensal = (salarioBase * porcentagemFinal) / 100;
             const valorCausa = valorMensal * 12;
-            const valorExtenso = valorPorExtenso(valorCausa);
+            
+            // Texto explicativo da regra de 3
+            let regraTexto = '';
+            if (salarioInformado > 0 && salarioInformado < SALARIO_MINIMO && porcentagemPersonalizada === null) {
+                const proporcao = (salarioInformado / SALARIO_MINIMO) * 100;
+                regraTexto = \`<p class="text-xs text-blue-600 mt-2">📐 Regra de 3 aplicada: \${proporcao.toFixed(1)}% do mínimo → porcentagem reduzida proporcionalmente.</p>\`;
+            }
             
             resultadoDiv.innerHTML = \`
                 <div class="bg-blue-50 rounded-lg p-5 border border-blue-200">
-                    <div class="flex justify-between items-start mb-4">
-                        <div><p class="text-sm text-gray-600">Porcentagem aplicada</p><p class="text-3xl font-bold text-blue-600">\${porcentagem}%</p></div>
-                        <div class="text-right"><p class="text-sm text-gray-600">Valor mensal estimado</p><p class="text-2xl font-bold text-gray-800">\${formatarMoeda(valorMensal)}</p></div>
+                    <div class="flex justify-between items-start mb-4 flex-wrap gap-3">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600">Porcentagem aplicada</p>
+                            <div id="porcentagem-container" class="flex items-center gap-2 flex-wrap">
+                                <span id="porcentagem-valor" class="text-3xl font-bold text-blue-600 cursor-pointer hover:opacity-75 transition">\${porcentagemFinal.toFixed(1)}%</span>
+                                <button id="editar-porcentagem-btn" class="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded">✏️ Editar</button>
+                            </div>
+                            <div id="edit-porcentagem-area" class="hidden mt-2">
+                                <input type="number" id="edit-porcentagem-input" value="\${porcentagemFinal}" min="0" max="100" step="0.5" class="w-32 px-2 py-1 border rounded">
+                                <button id="salvar-porcentagem-btn" class="bg-blue-600 text-white px-3 py-1 rounded text-sm ml-2">Salvar</button>
+                                <button id="cancelar-porcentagem-btn" class="bg-gray-300 px-3 py-1 rounded text-sm ml-1">Cancelar</button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">Valor mensal estimado</p>
+                            <p class="text-2xl font-bold text-gray-800">\${formatarMoeda(valorMensal)}</p>
+                        </div>
                     </div>
+                    \${regraTexto}
                     <div class="bg-gray-800 rounded-lg p-4 mt-4">
                         <p class="text-gray-400 text-xs uppercase tracking-wide">Valor da Causa (12 meses)</p>
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center flex-wrap gap-2">
                             <p class="text-white font-bold text-xl">\${formatarMoeda(valorCausa)}</p>
-                            <button onclick="copiarTexto('\${formatarMoeda(valorCausa)} (\${valorExtenso.replace(/'/g, "\\\\'")})')" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-white text-sm flex items-center gap-2">📋 Copiar</button>
+                            <button onclick="copiarTexto('\${formatarMoeda(valorCausa)}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-white text-sm">📋 Copiar</button>
                         </div>
-                        <p class="text-gray-400 text-xs mt-2 italic">\${valorExtenso}</p>
                     </div>
                     <p class="text-xs text-gray-500 mt-3">* Baseado no salário de \${formatarMoeda(salarioBase)}</p>
                 </div>
             \`;
+            
+            // Setup dos eventos de edição
+            const editarBtn = document.getElementById('editar-porcentagem-btn');
+            const editArea = document.getElementById('edit-porcentagem-area');
+            const porcentagemSpan = document.getElementById('porcentagem-valor');
+            const salvarBtn = document.getElementById('salvar-porcentagem-btn');
+            const cancelarBtn = document.getElementById('cancelar-porcentagem-btn');
+            const editInput = document.getElementById('edit-porcentagem-input');
+            
+            if (editarBtn) {
+                editarBtn.onclick = () => {
+                    editArea.classList.remove('hidden');
+                    porcentagemSpan.classList.add('hidden');
+                    editarBtn.classList.add('hidden');
+                    editInput.focus();
+                };
+            }
+            
+            if (salvarBtn) {
+                salvarBtn.onclick = () => {
+                    let novoValor = parseFloat(editInput.value);
+                    if (isNaN(novoValor)) novoValor = 0;
+                    novoValor = Math.min(100, Math.max(0, novoValor));
+                    porcentagemPersonalizada = novoValor;
+                    calcular();
+                };
+            }
+            
+            if (cancelarBtn) {
+                cancelarBtn.onclick = () => {
+                    porcentagemPersonalizada = null;
+                    calcular();
+                };
+            }
         }
         
         window.copiarTexto = function(texto) {
@@ -247,20 +273,27 @@
             alert("Valor copiado: " + texto);
         };
         
-        [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => el.addEventListener('input', calcular));
-        document.querySelectorAll('input[name="vinculo"]').forEach(radio => radio.addEventListener('change', calcular));
+        function recalcComReset() {
+            porcentagemPersonalizada = null;
+            calcular();
+        }
+        
+        [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => el.addEventListener('input', recalcComReset));
+        document.querySelectorAll('input[name="vinculo"]').forEach(radio => radio.addEventListener('change', recalcComReset));
         calcular();
     <\/script>
 </body>
 <\/html>`;
 
-        // ----- CALCULADORA DPERJ (MESMO PADRÃO DE PORCENTAGENS) -----
+        // =================================================================
+        // CALCULADORA DPERJ (com edição de % e regra de 3)
+        // =================================================================
         const CALCULADORA_DPERJ_HTML = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora DPERJ - Mesmo Padrão de %</title>
+    <title>Calculadora DPERJ</title>
     <script src="https://cdn.tailwindcss.com"><\/script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Inter', sans-serif; background: transparent; }<\/style>
@@ -269,7 +302,7 @@
     <div class="w-full p-6 space-y-6">
         <div class="text-center border-b pb-4">
             <h2 class="text-2xl font-bold text-gray-800">Modelo DPERJ - Cláusula de Barreira</h2>
-            <p class="text-blue-600 text-sm font-medium">📌 Mesmo padrão de porcentagens da Calculadora Padrão</p>
+            <p class="text-blue-600 text-sm font-medium">Com edição manual de porcentagem e regra de 3 sobre o mínimo</p>
         </div>
 
         <form id="form-dperj" class="space-y-5">
@@ -309,98 +342,152 @@
         const necessidadesCheckbox = document.getElementById('necessidades-especiais');
         const resultadoDiv = document.getElementById('resultado');
         const representacaoTxt = document.getElementById('representacao-minimo');
-        const SALARIO_MINIMO = 1621.00;
+        const SALARIO_MINIMO = ${SALARIO_MINIMO};
 
-        // MESMO PADRÃO DE PORCENTAGENS da Calculadora Padrão
         const regrasDPERJ = {
             '1': { com: 30, sem: 50 },
             '2': { com: 40, sem: 60 },
             '3': { com: 60, sem: 100 }
         };
 
+        let porcentagemPersonalizadaCom = null;
+        let porcentagemPersonalizadaSem = null;
+
         function formatarMoeda(valor) {
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
+        function aplicarRegraDeTres(porcentagemBase, salarioInformado) {
+            if (salarioInformado <= 0 || salarioInformado >= SALARIO_MINIMO) {
+                return porcentagemBase;
+            }
+            const proporcao = salarioInformado / SALARIO_MINIMO;
+            return Math.max(5, Math.min(100, porcentagemBase * proporcao));
+        }
+
         function calcular() {
-            const salarioInfo = parseFloat(salarioInput.value) || 0;
+            const salarioInformado = parseFloat(salarioInput.value) || 0;
+            const salarioBase = salarioInformado > 0 ? salarioInformado : SALARIO_MINIMO;
             const numFilhos = numFilhosSelect.value;
-            const plus = necessidadesCheckbox.checked ? 10 : 0;
-
-            let percCom = regrasDPERJ[numFilhos].com + plus;
-            let percSem = regrasDPERJ[numFilhos].sem + plus;
+            const temNecessidades = necessidadesCheckbox.checked;
             
-            // Limitar a 100%
-            percCom = Math.min(100, percCom);
-            percSem = Math.min(100, percSem);
-
-            const valorCom = (salarioInfo * percCom) / 100;
+            const proporcaoMinimo = salarioInformado > 0 ? (salarioInformado / SALARIO_MINIMO) * 100 : 0;
+            representacaoTxt.innerText = \`📊 Salário informado representa \${proporcaoMinimo.toFixed(1)}% do salário mínimo (R$ \${SALARIO_MINIMO.toLocaleString('pt-BR')})\`;
+            
+            let baseCom = regrasDPERJ[numFilhos].com;
+            let baseSem = regrasDPERJ[numFilhos].sem;
+            if (temNecessidades) {
+                baseCom = Math.min(100, baseCom + 10);
+                baseSem = Math.min(100, baseSem + 10);
+            }
+            
+            let percCom = porcentagemPersonalizadaCom !== null ? porcentagemPersonalizadaCom : aplicarRegraDeTres(baseCom, salarioInformado);
+            let percSem = porcentagemPersonalizadaSem !== null ? porcentagemPersonalizadaSem : aplicarRegraDeTres(baseSem, salarioInformado);
+            
+            percCom = Math.min(100, Math.max(0, percCom));
+            percSem = Math.min(100, Math.max(0, percSem));
+            
+            const valorCom = (salarioBase * percCom) / 100;
             const valorSem = (SALARIO_MINIMO * percSem) / 100;
             
-            const porcSobreMinimo = salarioInfo > 0 ? ((salarioInfo / SALARIO_MINIMO) * 100).toFixed(1) : 0;
-            representacaoTxt.innerText = \`📊 O salário informado representa \${porcSobreMinimo}% do salário mínimo vigente (R$ \${SALARIO_MINIMO.toLocaleString('pt-BR')}).\`;
-
+            let regraTexto = '';
+            if (salarioInformado > 0 && salarioInformado < SALARIO_MINIMO && porcentagemPersonalizadaCom === null) {
+                const proporcao = (salarioInformado / SALARIO_MINIMO) * 100;
+                regraTexto = \`<p class="text-xs text-blue-600 mt-2">📐 Regra de 3 aplicada: \${proporcao.toFixed(1)}% do mínimo → porcentagens reduzidas proporcionalmente.</p>\`;
+            }
+            
             resultadoDiv.innerHTML = \`
                 <div class="grid grid-cols-1 gap-4">
                     <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
                         <h3 class="text-blue-800 font-bold text-sm uppercase">✓ Com Vínculo Empregatício</h3>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-2xl font-bold text-blue-700">\${percCom}%</span>
+                        <div class="flex justify-between items-center mt-2 flex-wrap gap-2">
+                            <div>
+                                <p class="text-xs text-gray-500">Porcentagem</p>
+                                <div class="flex items-center gap-2">
+                                    <span id="perc-com-valor" class="text-2xl font-bold text-blue-700 cursor-pointer hover:opacity-75">\${percCom.toFixed(1)}%</span>
+                                    <button onclick="editarPorcentagem('com', \${percCom})" class="text-xs bg-gray-200 px-2 py-0.5 rounded">✏️</button>
+                                </div>
+                            </div>
                             <div class="text-right">
                                 <p class="text-xs text-gray-500">Mensal</p>
                                 <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorCom)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-blue-600 mt-2">Incide sobre rendimentos brutos (menos descontos legais)</p>
                     </div>
 
                     <div class="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg">
                         <h3 class="text-orange-800 font-bold text-sm uppercase">⚠ Sem Vínculo / Desemprego</h3>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-2xl font-bold text-orange-700">\${percSem}% <span class="text-xs">do SM</span></span>
+                        <div class="flex justify-between items-center mt-2 flex-wrap gap-2">
+                            <div>
+                                <p class="text-xs text-gray-500">Porcentagem do SM</p>
+                                <div class="flex items-center gap-2">
+                                    <span id="perc-sem-valor" class="text-2xl font-bold text-orange-700 cursor-pointer hover:opacity-75">\${percSem.toFixed(1)}%</span>
+                                    <button onclick="editarPorcentagem('sem', \${percSem})" class="text-xs bg-gray-200 px-2 py-0.5 rounded">✏️</button>
+                                </div>
+                            </div>
                             <div class="text-right">
-                                <p class="text-xs text-gray-500">Valor fixo mínimo</p>
+                                <p class="text-xs text-gray-500">Valor fixo</p>
                                 <p class="text-lg font-bold text-gray-800">\${formatarMoeda(valorSem)}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] text-orange-600 mt-2">Garantia em caso de perda de vínculo (Cláusula de Barreira)</p>
                     </div>
+                    
+                    \${regraTexto}
 
-                    <div class="bg-gray-800 text-white rounded-lg p-4 flex justify-between items-center">
+                    <div class="bg-gray-800 text-white rounded-lg p-4 flex justify-between items-center flex-wrap gap-2">
                         <div>
                             <p class="text-[10px] text-gray-400 uppercase tracking-wide">Valor da Causa (12 meses)</p>
                             <p class="text-xl font-bold">\${formatarMoeda(valorCom * 12)}</p>
                         </div>
-                        <button onclick="copiarValorDPERJ('\${formatarMoeda(valorCom * 12)}')" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded text-sm flex items-center gap-2">
-                            📋 Copiar
-                        </button>
+                        <button onclick="copiarValorDPERJ('\${formatarMoeda(valorCom * 12)}')" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded text-sm">📋 Copiar</button>
                     </div>
                     <p class="text-[11px] text-gray-400 text-center">* Base: Art. 292, III do CPC - 12x o valor mensal com vínculo</p>
                 </div>
             \`;
         }
-
+        
+        window.editarPorcentagem = function(tipo, valorAtual) {
+            let novoValor = prompt(\`Digite a nova porcentagem (0 a 100%):\`, valorAtual.toFixed(1));
+            if (novoValor !== null) {
+                let parsed = parseFloat(novoValor);
+                if (!isNaN(parsed)) {
+                    parsed = Math.min(100, Math.max(0, parsed));
+                    if (tipo === 'com') {
+                        porcentagemPersonalizadaCom = parsed;
+                    } else {
+                        porcentagemPersonalizadaSem = parsed;
+                    }
+                    calcular();
+                }
+            }
+        };
+        
         window.copiarValorDPERJ = function(texto) {
             navigator.clipboard.writeText(texto);
             alert("Valor da causa copiado: " + texto);
         };
-
+        
+        function resetPersonalizacoes() {
+            porcentagemPersonalizadaCom = null;
+            porcentagemPersonalizadaSem = null;
+            calcular();
+        }
+        
         [salarioInput, numFilhosSelect, necessidadesCheckbox].forEach(el => {
-            el.addEventListener('input', calcular);
+            el.addEventListener('input', resetPersonalizacoes);
         });
         calcular();
     <\/script>
-<\/body>
+</body>
 <\/html>`;
 
         // =================================================================
-        // GERENCIAMENTO DAS TABS E IFRAME
+        // GERENCIAMENTO DAS TABS
         // =================================================================
         const iframe = document.getElementById('calculator-frame');
         const tabPadrao = document.getElementById('tab-padrao');
         const tabDperj = document.getElementById('tab-dperj');
 
-        // Função para carregar conteúdo no iframe
         function carregarCalculadora(tipo) {
             if (tipo === 'padrao') {
                 iframe.srcdoc = CALCULADORA_PADRAO_HTML;
@@ -417,17 +504,15 @@
             }
         }
 
-        // Adicionar listeners
         tabPadrao.addEventListener('click', () => carregarCalculadora('padrao'));
         tabDperj.addEventListener('click', () => carregarCalculadora('dperj'));
 
-        // Ajustar altura do iframe dinamicamente
         function ajustarAlturaIframe() {
             if (iframe.contentWindow) {
                 try {
                     const altura = iframe.contentWindow.document.body.scrollHeight;
                     if (altura && altura > 100) iframe.style.height = (altura + 40) + 'px';
-                } catch(e) { /* cross-origin não afeta srcdoc */ }
+                } catch(e) {}
             }
         }
         
@@ -436,7 +521,6 @@
             setInterval(ajustarAlturaIframe, 500);
         });
 
-        // Carregar calculadora padrão por padrão
         carregarCalculadora('padrao');
     </script>
 </body>
