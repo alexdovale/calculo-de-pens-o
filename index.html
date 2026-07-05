@@ -3,452 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Estimativa de Pensão Alimentícia</title>
+    <title>Calculadora e Gerador de Pedido - Pensão Alimentícia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        body { font-family: 'Inter', sans-serif; }
+        .fonte-peticao { font-family: 'Merriweather', serif; } 
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: currentColor;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-slate-100 flex items-center justify-center min-h-screen py-10 px-4">
 
-    <div class="w-full max-w-lg p-8 space-y-6 bg-white rounded-xl shadow-lg m-4">
-        <div class="text-center">
-            <h1 class="text-3xl font-bold text-gray-800">Calculadora de Pensão</h1>
-            <p class="mt-2 text-gray-600">Estime a porcentagem e o valor da pensão alimentícia.</p>
+    <div class="w-full max-w-5xl space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-white p-8 rounded-2xl shadow-md text-center border-t-4 border-blue-600">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">Calculadora de Pensão</h1>
+            <p class="mt-2 text-slate-500 font-medium">Análise de cenários e geração automática do pedido jurídico.</p>
         </div>
 
-        <form id="pension-form" class="space-y-6">
-              <div>
-                  <label for="salario" class="block text-sm font-medium text-gray-700 mb-2">Qual o salário base para cálculo?</label>
-                  <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">R$</span>
-                        <input type="number" id="salario" class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" step="0.01">
-                  </div>
-              </div>
+        <!-- Painel de Entradas -->
+        <form id="pension-form" class="bg-white p-6 md:p-8 rounded-2xl shadow-md space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Salário Líquido do Pai (R$)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 font-bold">R$</span>
+                        <input type="number" id="salario" value="1900" class="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition font-semibold text-slate-700" step="0.01">
+                    </div>
+                </div>
 
-              <div>
-                  <label for="num-filhos" class="block text-sm font-medium text-gray-700 mb-2">Qual o número de filhos?</label>
-                  <select id="num-filhos" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option value="1">1 filho</option>
-                      <option value="2">2 filhos</option>
-                      <option value="3">3 filhos ou mais</option>
-                  </select>
-              </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Salário Mínimo Atual (R$)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 font-bold">R$</span>
+                        <input type="number" id="salario-minimo" value="1621" class="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition font-semibold text-slate-700" step="0.01">
+                    </div>
+                </div>
 
-              <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Possui vínculo empregatício?</label>
-                  <div class="flex gap-4">
-                      <label for="com-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                          <input type="radio" id="com-vinculo" name="vinculo" value="com" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
-                          <span class="ml-3 text-sm font-medium text-gray-800">Sim, com vínculo</span>
-                      </label>
-                      <label for="sem-vinculo" class="flex items-center p-3 w-full border border-gray-300 rounded-lg cursor-pointer has-[:checked]:bg-blue-50 has-[:checked]:border-blue-500 transition">
-                          <input type="radio" id="sem-vinculo" name="vinculo" value="sem" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                          <span class="ml-3 text-sm font-medium text-gray-800">Não, sem vínculo</span>
-                      </label>
-                  </div>
-              </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Número de Filhos</label>
+                    <input type="number" id="num-filhos" value="3" min="1" max="15" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition font-semibold text-slate-700 text-center">
+                </div>
+            </div>
 
-              <div class="flex items-center">
-                  <input id="necessidades-especiais" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                  <label for="necessidades-especiais" class="ml-3 block text-sm font-medium text-gray-800">Algum dos filhos possui necessidades especiais?</label>
-              </div>
+            <div class="flex pt-4 border-t border-slate-100">
+                <label for="necessidades-especiais" class="flex items-center p-3 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 transition w-full md:w-auto">
+                    <input type="checkbox" id="necessidades-especiais" class="h-5 w-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                    <span class="ml-3 text-sm font-medium text-slate-700">Adicionar Necessidades Especiais (+10%)</span>
+                </label>
+            </div>
         </form>
 
-        <div class="border-t border-gray-200 pt-6">
-            <div id="resultado" class="text-center p-6 bg-blue-50 rounded-lg border border-blue-200 transition-all duration-300">
-                <p class="text-lg font-medium text-gray-600">O resultado aparecerá aqui.</p>
+        <!-- Painel de Resultados Lado a Lado -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Cenário 1: Com Vínculo -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                <div class="bg-emerald-600 p-4 text-white">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Com Vínculo Empregatício
+                    </h2>
+                </div>
+                
+                <div class="p-6 flex-1 flex flex-col">
+                    <!-- FUNDAMENTAÇÃO JURÍDICA: COM VÍNCULO -->
+                    <div class="mb-5 bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
+                        <p class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Por que calculamos assim?</p>
+                        <p class="text-sm text-emerald-700 leading-relaxed text-justify">
+                            Quando há carteira assinada, o desconto vai <strong>direto para o RH da empresa</strong>. O pedido é feito em <strong>percentual sobre o salário líquido</strong> para garantir que incida também sobre 13º salário, férias e verbas rescisórias.<br><br>
+                            A lei (CPC) proíbe que o desconto ultrapasse <strong>50% da folha</strong>, para não comprometer a sobrevivência de quem paga (Princípio da Possibilidade).
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="text-sm font-bold text-slate-600">Porcentagem Total Pedida:</label>
+                            <span id="display-perc-com" class="text-2xl font-black text-emerald-600">45%</span>
+                        </div>
+                        <input type="range" id="range-perc-com" min="10" max="100" value="45" class="text-emerald-500">
+                    </div>
+                    <div id="alerta-vinculo" class="hidden mb-4 p-3 rounded-lg text-sm flex items-start gap-2"></div>
+
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mt-auto space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <span class="text-slate-500 font-medium">Pensão Total:</span>
+                            <span id="total-vinculo" class="text-2xl font-bold text-slate-800">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-blue-700">Cota para cada filho</span>
+                                <span id="perc-cota-com" class="ml-2 text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200">15%</span>
+                            </div>
+                            <span id="cota-vinculo" class="text-lg font-bold text-blue-700">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-              <p class="text-xs text-gray-500 mt-4 text-center">
-                  <strong>Atenção:</strong> Os valores e porcentagens são apenas estimativas e podem ser alterados de acordo com o caso concreto. O valor de causa é calculado com base no Art. 292, III do CPC (12 vezes o valor mensal da pensão).
-              </p>
+
+            <!-- Cenário 2: Sem Vínculo -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                <div class="bg-amber-500 p-4 text-white">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Sem Vínculo / Autônomo
+                    </h2>
+                </div>
+
+                <div class="p-6 flex-1 flex flex-col">
+                    <!-- FUNDAMENTAÇÃO JURÍDICA: SEM VÍNCULO -->
+                    <div class="mb-5 bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                        <p class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Por que calculamos assim?</p>
+                        <p class="text-sm text-amber-700 leading-relaxed text-justify">
+                            Para autônomos ou desempregados, não existe contracheque (RH). Por isso, a Justiça atrela o valor ao <strong>Salário Mínimo nacional</strong>. <br><br>
+                            Isso evita que o pagador alegue que "não ganhou nada no mês" para deixar de pagar. Além disso, se ele aparentar um alto padrão de vida (Teoria da Aparência), o juiz não fica preso ao limite de 50%, podendo fixar cotas maiores para garantir o sustento.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="text-sm font-bold text-slate-600">Porcentagem Total Pedida:</label>
+                            <span id="display-perc-sem" class="text-2xl font-black text-amber-500">53%</span>
+                        </div>
+                        <input type="range" id="range-perc-sem" min="10" max="150" value="53" class="text-amber-500">
+                    </div>
+
+                    <div id="alerta-sem-vinculo" class="mb-4 bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm flex items-start gap-2 text-amber-800 hidden">
+                        <!-- Alertas extras entram aqui via JS se passar de 70% -->
+                    </div>
+
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mt-auto space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                            <span class="text-slate-500 font-medium">Pensão Total:</span>
+                            <span id="total-sem-vinculo" class="text-2xl font-bold text-slate-800">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-blue-700">Cota para cada filho</span>
+                                <span id="perc-cota-sem" class="ml-2 text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full border border-blue-200">17.67%</span>
+                            </div>
+                            <span id="cota-sem-vinculo" class="text-lg font-bold text-blue-700">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+        <!-- GERADOR DE TEXTO PARA A PETIÇÃO -->
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+            <div class="bg-slate-800 p-4 text-white flex justify-between items-center">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Pedidos Finais (Gerador de Peça Inicial)
+                </h2>
+                <button id="btn-copiar-peticao" class="flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-bold transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    Copiar Texto
+                </button>
+            </div>
+            
+            <div class="p-6 md:p-8 bg-slate-50">
+                <div id="texto-peticao" class="fonte-peticao text-slate-800 leading-relaxed text-justify space-y-4 p-6 bg-white border border-slate-200 shadow-sm rounded-lg">
+                    <p>
+                        d) a fixação, inaudita altera pars, dos ALIMENTOS PROVISÓRIOS, e, ao final, DEFINITIVOS, para:
+                    </p>
+                    <p>
+                        d.1) na hipótese de trabalho <strong>COM VÍNCULO EMPREGATÍCIO OU RECEBIMENTO DE PROVENTOS</strong>, em quantia mensal não inferior a <strong class="text-blue-700 bg-blue-50 px-1 rounded" id="txt-perc-com"></strong> de todos os rendimentos ou proventos brutos da parte ré, admitidos somente os descontos obrigatórios e que deverão incidir também sobre as parcelas das horas extras, férias proporcionais e vencidas, 13º salário, benefícios, adicionais, comissões, gratificações, abonos, FGTS, PIS/PASEP e verbas rescisórias, além do salário família, desde que não inferior a <strong class="text-blue-700 bg-blue-50 px-1 rounded" id="txt-perc-sem-2"></strong> do salário mínimo nacional vigente, estabelecido este como CLÁUSULA DE BARREIRA, a ser descontado diretamente em folha de pagamento e que conste também, do mesmo ofício que, em caso de dispensa do(a) Alimentante, seja retida uma parte dos depósitos do FGTS na mesma proporção da pensão alimentícia fixada e creditado em conta bancária em nome da pessoa representante legal da parte autora, a saber: Banco xxxxx, Conta corrente nº xxxxxx, Agência xxxxx, Chave PIX: XXXXXXXXX; ou em conta judicial a ser aberta por este r. juízo em nome da pessoa representante legal da parte requerente;
+                    </p>
+                    <p>
+                        d.2) na hipótese de trabalho <strong>SEM VÍNCULO EMPREGATÍCIO</strong>, em quantia mensal não inferior a <strong class="text-blue-700 bg-blue-50 px-1 rounded" id="txt-perc-sem-1"></strong> do salário mínimo, a ser creditado em conta bancária em nome da pessoa representante legal da parte autora, a saber: Banco xxxxx, Conta corrente nº xxxxxx, Agência xxxxx, Chave PIX: XXXXXXXXX; ou em conta judicial a ser aberta por este r. juízo em nome da pessoa representante legal da parte requerente até o dia dez de cada mês, estabelecido este percentual como cláusula de barreira em qualquer caso;
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Valor da Causa -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-left">
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Valor da Causa (Para o Art. 292, III do CPC)</p>
+                    <p id="valor-causa-display" class="text-2xl font-black text-slate-800">R$ 0,00</p>
+                </div>
+                <button id="copy-causa-button" class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-xl font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <span>Copiar Valor da Causa</span>
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Elementos do DOM
-        const form = document.getElementById('pension-form');
         const salarioInput = document.getElementById('salario');
-        const numFilhosSelect = document.getElementById('num-filhos');
-        const vinculoRadios = document.getElementsByName('vinculo');
-        const necessidadesCheckbox = document.getElementById('necessidades-especiais');
-        const resultadoDiv = document.getElementById('resultado');
-
-        // Valor do salário mínimo para referência (R$ 1.518,00 - Valor de 2025)
-        const SALARIO_MINIMO = 1518.00;
-        salarioInput.placeholder = `Salário Mínimo Padrão: ${SALARIO_MINIMO.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}`;
-
-        // Dados base para o cálculo (Removido o valorCausa fixo)
-        const dadosPensao = {
-            '1': {
-                com: 30, // % para 1 filho, com vínculo
-                sem: 50  // % para 1 filho, sem vínculo (base no SM)
-            },
-            '2': {
-                com: 40, // % para 2 filhos, com vínculo
-                sem: 60  // % para 2 filhos, sem vínculo (base no SM)
-            },
-            '3': {
-                com: 60, // % para 3+ filhos, com vínculo
-                sem: 100 // % para 3+ filhos, sem vínculo (base no SM)
-            }
-        };
-
-        // Variável para armazenar a porcentagem personalizada
-        let porcentagemPersonalizada = null;
+        const minInput = document.getElementById('salario-minimo');
+        const numFilhosInput = document.getElementById('num-filhos');
+        const necEspeciaisCheck = document.getElementById('necessidades-especiais');
         
-        // =================================================================
-        // FUNÇÃO DE CONVERSÃO PARA VALOR POR EXTENSO (REAIS E CENTAVOS)
-        // =================================================================
+        const rangeCom = document.getElementById('range-perc-com');
+        const displayCom = document.getElementById('display-perc-com');
+        const percCotaCom = document.getElementById('perc-cota-com');
+
+        const rangeSem = document.getElementById('range-perc-sem');
+        const displaySem = document.getElementById('display-perc-sem');
+        const percCotaSem = document.getElementById('perc-cota-sem');
+        
+        let valorCausaFinal = 0;
+
+        function formatarMoeda(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v); }
+
+        function numeroParaExtenso(numStr) {
+            const num = parseFloat(numStr);
+            if (isNaN(num)) return '';
+            const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
+            const dezenas1 = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+            const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+            const centenas = ['', 'cem', 'duzentos'];
+            
+            function traduzirInteiro(n) {
+                if (n === 0) return 'zero';
+                if (n === 100) return 'cem';
+                let ext = '';
+                const c = Math.floor(n / 100);
+                const d = Math.floor((n % 100) / 10);
+                const u = n % 10;
+                if (c > 0) ext += centenas[c];
+                if (d > 0) {
+                    if (ext !== '') ext += ' e ';
+                    if (d === 1) return ext + dezenas1[u];
+                    ext += dezenas[d];
+                    if (u > 0) ext += ' e ' + unidades[u];
+                } else if (u > 0) {
+                    if (ext !== '') ext += ' e ';
+                    ext += unidades[u];
+                }
+                return ext;
+            }
+
+            const partes = numStr.toString().split('.');
+            let finalStr = traduzirInteiro(parseInt(partes[0]));
+
+            if (partes.length > 1 && partes[1] !== '00' && partes[1] !== '0') {
+                let decimais = partes[1].padEnd(2, '0').substring(0, 2);
+                finalStr += ' vírgula ' + traduzirInteiro(parseInt(decimais));
+            }
+            return finalStr;
+        }
+
         function valorMonetarioPorExtenso(valor) {
             if (typeof valor !== 'number' || isNaN(valor)) return '';
-
             const unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'];
             const dezenas1 = ['dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
             const dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
             const centenas = ['', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
             const milhares = ['', 'mil', 'milhão', 'bilhão'];
 
-            // Função auxiliar para converter um número de até 3 dígitos em palavras
             function extenso(n, singular, plural) {
                 if (n === 0) return '';
                 let s = '';
                 const c = Math.floor(n / 100);
                 const d = Math.floor((n % 100) / 10);
                 const u = n % 10;
-
-                if (c > 0) {
-                    if (c === 1 && d === 0 && u === 0) s += 'cem';
-                    else s += centenas[c];
-                }
-
-                if (d > 0) {
-                    if (s !== '') s += ' e ';
-                    if (d === 1) {
-                        s += dezenas1[u];
-                    } else {
-                        s += dezenas[d];
-                        if (u > 0) s += ' e ' + unidades[u];
-                    }
-                } else if (u > 0) {
-                    if (s !== '') s += ' e ';
-                    s += unidades[u];
-                }
-
-                if (n > 1) {
-                    s += ' ' + plural;
-                } else if (n === 1) {
-                    s += ' ' + singular;
-                }
+                if (c > 0) { if (c === 1 && d === 0 && u === 0) s += 'cem'; else s += centenas[c]; }
+                if (d > 0) { if (s !== '') s += ' e '; if (d === 1) s += dezenas1[u]; else { s += dezenas[d]; if (u > 0) s += ' e ' + unidades[u]; } } 
+                else if (u > 0) { if (s !== '') s += ' e '; s += unidades[u]; }
+                if (n > 1) s += ' ' + plural; else if (n === 1) s += ' ' + singular;
                 return s;
             }
 
-            // Separar Reais e Centavos
             const intPart = Math.floor(valor);
-            // Centavos são a parte decimal multiplicada por 100, arredondada para garantir 2 dígitos
             const centavos = Math.round((valor - intPart) * 100);
-
-            let texto = '';
-            let n = intPart;
-            let idx = 0;
-
+            let texto = ''; let n = intPart; let idx = 0;
             if (n === 0 && centavos === 0) return 'zero reais';
             if (n === 0) return extenso(centavos, 'centavo', 'centavos');
-            
             do {
                 const parte = n % 1000;
                 if (parte !== 0) {
                     let s = extenso(parte, (idx === 1 ? 'mil' : (idx === 2 ? 'milhão' : 'real')), (idx === 1 ? 'mil' : (idx === 2 ? 'milhões' : 'reais')));
-                    
-                    if (idx > 1) {
-                        // Tratar unidades de milhar superior (milhão, bilhão)
-                        s = (parte === 1 ? 'um ' + milhares[idx] : s);
-                    }
-                    
-                    if (texto !== '') {
-                        texto = (idx === 1 ? ' ' : (parte < 100 && parte !== 0 ? ' e ' : ' ')) + texto;
-                    }
-
+                    if (idx > 1) s = (parte === 1 ? 'um ' + milhares[idx] : s);
+                    if (texto !== '') texto = (idx === 1 ? ' ' : (parte < 100 && parte !== 0 ? ' e ' : ' ')) + texto;
                     texto = s.trim() + texto;
                 }
-                n = Math.floor(n / 1000);
-                idx++;
+                n = Math.floor(n / 1000); idx++;
             } while (n > 0);
-
-            // Adicionar centavos
-            if (centavos > 0) {
-                if (intPart > 0) {
-                    texto += ' e ';
-                }
-                texto += extenso(centavos, 'centavo', 'centavos');
-            } else if (intPart > 0 && !texto.endsWith('reais') && !texto.endsWith('real')) {
-                 // Adicionar "reais" se o valor for inteiro e o loop não adicionou
-                 texto += (intPart > 1 ? ' reais' : ' real');
-            }
-
-            // A primeira letra em maiúsculo
+            if (centavos > 0) { if (intPart > 0) texto += ' e '; texto += extenso(centavos, 'centavo', 'centavos'); } 
+            else if (intPart > 0 && !texto.endsWith('reais') && !texto.endsWith('real')) texto += (intPart > 1 ? ' reais' : ' real');
             return texto.charAt(0).toUpperCase() + texto.slice(1);
         }
-        // =================================================================
-        
 
-        function calcularPensao() {
-            // Obter valores dos inputs
-            const salarioValor = parseFloat(salarioInput.value);
-            // Se o campo estiver vazio ou zero, usa o salário mínimo como base (para 'sem vínculo')
-            const salarioBase = salarioValor > 0 ? salarioValor : SALARIO_MINIMO;
-
-            const numFilhos = numFilhosSelect.value;
-            const vinculo = document.querySelector('input[name="vinculo"]:checked').value;
-            const temNecessidadesEspeciais = necessidadesCheckbox.checked;
-
-            // Obter dados base
-            const dadosBase = dadosPensao[numFilhos];
-            let porcentagemBase = dadosBase[vinculo];
-
-            // Adicionar 10% se houver necessidades especiais
-            if (temNecessidadesEspeciais) {
-                // Garante que a porcentagem base não ultrapasse 100%, especialmente no caso 'sem vínculo'
-                porcentagemBase = Math.min(100, porcentagemBase + 10);
-            }
-            
-            // Usar a porcentagem personalizada se ela estiver definida, senão usar a base
-            let porcentagem = porcentagemPersonalizada !== null ? porcentagemPersonalizada : porcentagemBase;
-
-            // Calcular o valor da pensão com base na porcentagem ATUAL
-            const valorPensao = (salarioBase * porcentagem) / 100;
-            
-            // NOVO CÁLCULO: Valor da Causa = Valor Mensal da Pensão x 12
-            const valorCausa = valorPensao * 12; 
-
-            // Formatar valores para moeda brasileira
-            const valorCausaFormatado = valorCausa.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-            const valorPensaoFormatado = valorPensao.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-            const salarioBaseFormatado = salarioBase.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-
-            // Valor da Causa por extenso
-            const valorCausaPorExtenso = valorMonetarioPorExtenso(valorCausa);
-
-            // Conteúdo e título do botão de Edição/Redefinição
-            let editButtonContent;
-            let editButtonTitle;
-            let porcentagemDisplayHint = 'Valor sugerido com base nas regras de estimativa.';
-
-            if (porcentagemPersonalizada !== null) {
-                // Modo Redefinir
-                editButtonContent = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                    </svg>
-                    <span>Redefinir</span>`;
-                editButtonTitle = 'Redefinir para o valor sugerido (base)';
-                porcentagemDisplayHint = 'Valor personalizado. Clique em Redefinir para voltar ao sugerido.';
-            } else {
-                // Modo Ajustar
-                editButtonContent = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-7.5 7.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3z"/>
-                        <path fill-rule="evenodd" d="M11.5 2.5a1 1 0 0 1 1 1V5h-2V3.5a1 1 0 0 1 1-1zM5 13.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 1-1-1v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5v2.5z"/>
-                    </svg>
-                    <span>Ajustar %</span>`; // Texto mais claro
-                editButtonTitle = 'Clique para personalizar a porcentagem (0-100%)';
-            }
-
-
-            // Exibir o resultado
-            resultadoDiv.innerHTML = `
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-600">Porcentagem Estimada</p>
-                            
-                            <button id="edit-porcentagem-button" 
-                                title="${editButtonTitle}" 
-                                class="flex items-center gap-1.5 px-3 py-1 text-xs rounded-full bg-blue-100 font-semibold 
-                                       text-blue-700 hover:bg-blue-200 active:bg-blue-300 transition-colors">
-                                ${editButtonContent}
-                            </button>
-
-                        </div>
-                        <div id="porcentagem-display" 
-                            title="${porcentagemDisplayHint}"
-                            class="text-3xl font-bold text-blue-600 cursor-pointer hover:opacity-90 transition
-                                ${porcentagemPersonalizada !== null ? 'text-blue-700 underline decoration-dashed' : ''}">
-                            ${porcentagem}%
-                        </div>
-                        
-                        <div id="porcentagem-input-group" class="hidden relative pt-2">
-                            <input type="number" id="porcentagem-edit-input" value="${porcentagem}" min="0" max="100" step="1" 
-                                class="w-full pr-6 py-1 text-xl font-bold border-2 border-blue-500 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                            <span class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold mt-1">%</span>
-                            <button id="save-porcentagem-button" title="Salvar Porcentagem" class="mt-2 w-full bg-blue-500 text-white py-1 rounded-md hover:bg-blue-600 transition">Salvar</button>
-                            <button id="cancel-porcentagem-button" title="Cancelar Edição" class="mt-1 w-full bg-gray-300 text-gray-800 py-1 rounded-md hover:bg-gray-400 transition">Cancelar</button>
-                        </div>
-                        
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Valor Estimado da Pensão</p>
-                        <p id="valor-pensao-display" class="text-3xl font-bold text-blue-600">${valorPensaoFormatado}</p>
-                    </div>
-
-                    <div class="col-span-1 sm:col-span-2 border-t mt-4 pt-4 space-y-3">
-                          
-                          <p class="text-base text-gray-600 font-medium">Cálculo baseado em um salário de ${salarioBaseFormatado}.</p>
-                          
-                          <div class="p-3 bg-gray-100 rounded-lg border border-gray-300">
-                              <p class="text-sm font-medium text-gray-700">Valor de Causa de Referência (12 meses):</p>
-                              <p id="valor-causa-display" class="text-xl font-bold text-gray-800 mt-1">${valorCausaFormatado}</p>
-                          </div>
-
-                          <button id="copy-button" title="Copiar valor da causa" 
-                                  class="w-full flex items-center justify-center gap-2 px-4 py-3 text-lg rounded-lg font-semibold 
-                                         bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-md">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                                  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-                              </svg>
-                              <span>Copiar Valor da Causa</span>
-                          </button>
-                    </div>
-                </div>
-            `;
-            
-            // Adicionar funcionalidade ao botão de copiar
-            const copyButton = document.getElementById('copy-button');
-            if(copyButton) {
-                const originalContent = copyButton.innerHTML;
-                copyButton.addEventListener('click', () => {
-                    const textArea = document.createElement("textarea");
-                    
-                    // --- NOVA ESTRUTURA DE CÓPIA ---
-                    const textoParaCopiar = `${valorCausaFormatado} (${valorCausaPorExtenso})`;
-                    textArea.value = textoParaCopiar;
-                    // --- FIM NOVA ESTRUTURA DE CÓPIA ---
-
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        copyButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="text-white" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/>
-                            </svg>
-                            <span>Valor Copiado!</span>
-                        `;
-                        copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800');
-                        copyButton.classList.add('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
-                        copyButton.title = "Copiado!";
-                        setTimeout(() => {
-                           copyButton.innerHTML = originalContent;
-                           copyButton.classList.remove('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
-                           copyButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800');
-                           copyButton.title = "Copiar valor da causa";
-                        }, 2000);
-                    } catch (err) {
-                        console.error('Falha ao copiar', err);
-                    }
-                    document.body.removeChild(textArea);
-                });
-            }
-
-            // Adicionar funcionalidade aos botões de edição
-            const editButton = document.getElementById('edit-porcentagem-button');
-            const saveButton = document.getElementById('save-porcentagem-button');
-            const cancelButton = document.getElementById('cancel-porcentagem-button');
-            const porcentagemDisplay = document.getElementById('porcentagem-display');
-            const porcentagemInputGroup = document.getElementById('porcentagem-input-group');
-            const porcentagemInput = document.getElementById('porcentagem-edit-input');
-
-            // Adicionar listener ao display para ativar a edição (melhoria de usabilidade)
-            porcentagemDisplay.addEventListener('click', () => {
-                // Ativa a edição se não estiver personalizada ou se o usuário quiser editar de novo
-                if (porcentagemPersonalizada === null || !porcentagemInputGroup.classList.contains('hidden')) {
-                    alternarEdicao(true);
-                }
-            });
-
-
-            // Função para alternar entre a exibição e a edição
-            function alternarEdicao(modoEdicao) {
-                if (modoEdicao) {
-                    porcentagemDisplay.classList.add('hidden');
-                    porcentagemInputGroup.classList.remove('hidden');
-                    editButton.classList.add('hidden'); // Esconde o botão de ajuste no modo de edição
-                    porcentagemInput.focus();
-                } else {
-                    porcentagemDisplay.classList.remove('hidden');
-                    porcentagemInputGroup.classList.add('hidden');
-                    editButton.classList.remove('hidden');
-                }
-            }
-
-            // Ação do botão de Edição/Redefinição
-            editButton.addEventListener('click', () => {
-                if (porcentagemPersonalizada !== null) {
-                    // Se já estiver personalizado, redefinir para o valor base
-                    porcentagemPersonalizada = null;
-                    calcularPensao(); // Recalcula com o valor base e fecha o modo de edição
-                } else {
-                    // Entrar no modo de edição
-                    alternarEdicao(true);
-                }
-            });
-
-            // Ação do botão de Salvar
-            saveButton.addEventListener('click', () => {
-                let novoValor = parseInt(porcentagemInput.value);
-                
-                // Validação e Limitação
-                if (isNaN(novoValor) || novoValor < 0) {
-                    novoValor = 0;
-                } else if (novoValor > 100) {
-                    novoValor = 100; // Limite superior
-                }
-                
-                // Salvar o valor personalizado
-                porcentagemPersonalizada = novoValor;
-                porcentagemInput.value = novoValor; // Reflete o valor validado no campo
-                
-                // Recalcular TUDO (Valor da Pensão e Valor da Causa) e sair do modo de edição
-                calcularPensao(); 
-            });
-
-            // Ação do botão de Cancelar
-            cancelButton.addEventListener('click', () => {
-                // Sair do modo de edição sem alterar o valor.
-                alternarEdicao(false);
-                // O input deve voltar para o valor atualmente ativo (base ou personalizado)
-                porcentagemInput.value = porcentagem; 
-            });
+        function redefinirPorcentagens() {
+            const filhos = parseInt(numFilhosInput.value) || 1;
+            let pCom = 20; let pSem = 30;
+            if (filhos === 1) { pCom = 20; pSem = 30; }
+            else if (filhos === 2) { pCom = 30; pSem = 40; }
+            else if (filhos === 3) { pCom = 45; pSem = 53; }
+            else if (filhos === 4) { pCom = 50; pSem = 60; }
+            else if (filhos >= 5) { pCom = 50; pSem = 70; }
+            if(necEspeciaisCheck.checked) { pCom += 10; pSem += 10; }
+            rangeCom.value = pCom; rangeSem.value = pSem;
+            calcularValores();
         }
 
-        // Adicionar ouvintes de evento para recalcular automaticamente
-        form.addEventListener('input', () => {
-            // Recalcula se houver mudança nos inputs (salário, filhos, vínculo, necessidades)
-            // mas apenas se o modo de edição de porcentagem estiver fechado.
-            if (document.getElementById('porcentagem-input-group')?.classList.contains('hidden')) {
-                calcularPensao();
-            }
-        });
-        
-        // Calcular ao carregar a página pela primeira vez
-        document.addEventListener('DOMContentLoaded', calcularPensao);
-    </script>
+        function calcularValores() {
+            const salLiquido = parseFloat(salarioInput.value) || 0;
+            const salMin = parseFloat(minInput.value) || 1621;
+            const filhos = parseInt(numFilhosInput.value) || 1;
+            
+            const pCom = parseInt(rangeCom.value);
+            const pSem = parseInt(rangeSem.value);
+            
+            let cotaComVal = (pCom / filhos).toFixed(2).replace('.00', '');
+            let cotaSemVal = (pSem / filhos).toFixed(2).replace('.00', '');
 
+            const valorSemVinculo = salMin * (pSem / 100);
+            let valorComVinculoBase = salLiquido * (pCom / 100);
+            
+            if (valorComVinculoBase < valorSemVinculo && salLiquido > 0) {
+                const percentualEfetivo = ((valorSemVinculo / salLiquido) * 100) / filhos;
+                cotaComVal = percentualEfetivo.toFixed(2).replace('.00', '');
+            }
+
+            displayCom.innerText = pCom + '%';
+            displaySem.innerText = pSem + '%';
+            percCotaCom.innerText = cotaComVal + '%';
+            percCotaSem.innerText = cotaSemVal + '%';
+            document.getElementById('total-sem-vinculo').innerText = formatarMoeda(valorSemVinculo);
+            document.getElementById('cota-sem-vinculo').innerText = formatarMoeda(valorSemVinculo / filhos);
+            
+            let vFinalCom = valorComVinculoBase < valorSemVinculo ? valorSemVinculo : valorComVinculoBase;
+            document.getElementById('total-vinculo').innerText = formatarMoeda(vFinalCom);
+            document.getElementById('cota-vinculo').innerText = formatarMoeda(vFinalCom / filhos);
+            
+            // Lógica de Alertas
+            const alertaVinculo = document.getElementById('alerta-vinculo');
+            const alertaSemVinculo = document.getElementById('alerta-sem-vinculo');
+            
+            alertaVinculo.className = "hidden mb-4 p-3 rounded-lg text-sm flex items-start gap-2";
+            alertaVinculo.innerHTML = "";
+            alertaSemVinculo.className = "hidden mb-4 p-3 rounded-lg text-sm flex items-start gap-2";
+            alertaSemVinculo.innerHTML = "";
+
+            if (pCom > 50) {
+                alertaVinculo.className = "mb-4 p-3 rounded-lg text-sm flex items-start gap-2 bg-red-50 border border-red-200 text-red-800";
+                alertaVinculo.innerHTML = `<svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><p><strong>Risco Jurídico:</strong> Desconto na folha não pode ultrapassar 50% (Art. 529, §3º, CPC).</p>`;
+            } else if (valorComVinculoBase < valorSemVinculo && salLiquido > 0) {
+                alertaVinculo.className = "mb-4 p-3 rounded-lg text-sm flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800";
+                alertaVinculo.innerHTML = `<svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><p><strong>Cláusula de Barreira Acionada:</strong> Pensão elevada ao valor do plano sem vínculo.</p>`;
+            }
+
+            if(pSem > 70) {
+                alertaSemVinculo.className = "mb-4 bg-rose-50 border border-rose-200 p-3 rounded-lg text-sm flex items-start gap-2 text-rose-800";
+                alertaSemVinculo.innerHTML = `<svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><p>Pedidos acima de 70% costumam exigir provas do alto padrão de vida (Teoria da Aparência).</p>`;
+            }
+
+            // PREENCHIMENTO DA PETIÇÃO 
+            document.getElementById('txt-perc-sem-1').innerText = `${pSem}% (${numeroParaExtenso(pSem)} por cento)`;
+            document.getElementById('txt-perc-sem-2').innerText = `${pSem}% (${numeroParaExtenso(pSem)} por cento)`;
+            document.getElementById('txt-perc-com').innerText = `${pCom}% (${numeroParaExtenso(pCom)} por cento)`;
+
+            valorCausaFinal = vFinalCom * 12;
+            document.getElementById('valor-causa-display').innerText = formatarMoeda(valorCausaFinal);
+        }
+
+        numFilhosInput.addEventListener('change', redefinirPorcentagens);
+        numFilhosInput.addEventListener('keyup', redefinirPorcentagens);
+        necEspeciaisCheck.addEventListener('change', redefinirPorcentagens);
+        salarioInput.addEventListener('input', calcularValores);
+        minInput.addEventListener('input', calcularValores);
+        rangeCom.addEventListener('input', calcularValores);
+        rangeSem.addEventListener('input', calcularValores);
+
+        // Copiar Texto da Petição
+        const copyPeticaoBtn = document.getElementById('btn-copiar-peticao');
+        copyPeticaoBtn.addEventListener('click', () => {
+            let texto = document.getElementById('texto-peticao').innerText.replace(/\n\s*\n/g, '\n\n').trim();
+            copiarParaAreaDeTransferencia(texto, copyPeticaoBtn, "Copiar Texto");
+        });
+
+        // Copiar Valor da Causa
+        const copyCausaBtn = document.getElementById('copy-causa-button');
+        copyCausaBtn.addEventListener('click', () => {
+            const extenso = valorMonetarioPorExtenso(valorCausaFinal);
+            const texto = `${formatarMoeda(valorCausaFinal)} (${extenso})`;
+            copiarParaAreaDeTransferencia(texto, copyCausaBtn, "Copiar Valor da Causa");
+        });
+
+        function copiarParaAreaDeTransferencia(texto, botao, textoOriginal) {
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const originalHtml = botao.innerHTML;
+                botao.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Copiado!</span>`;
+                botao.classList.add('bg-green-600', 'text-white');
+                botao.classList.remove('bg-blue-600', 'bg-slate-200', 'text-slate-700');
+                setTimeout(() => {
+                    botao.innerHTML = originalHtml;
+                    if(textoOriginal === "Copiar Valor da Causa") {
+                        botao.classList.add('bg-slate-200', 'text-slate-700');
+                        botao.classList.remove('bg-green-600', 'text-white');
+                    } else {
+                        botao.classList.add('bg-blue-600', 'text-white');
+                        botao.classList.remove('bg-green-600');
+                    }
+                }, 2000);
+            } catch(e) { console.error('Erro ao copiar'); }
+            document.body.removeChild(textarea);
+        }
+
+        calcularValores();
+    </script>
 </body>
 </html>
